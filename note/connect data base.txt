@@ -1,0 +1,9 @@
+// Setup connect mongodb by mongoose
+// mongoClient
+//   .connect("mongodb://localhost/node/")
+//   .then(() => {
+//     console.log("Connected database from mongodb");
+//   })
+//   .catch(() => {
+//     console.log("Failed connect database");
+//   });
