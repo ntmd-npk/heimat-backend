@@ -1,4 +1,4 @@
-let accounts = require("../models/user");
+let Users = require("../models/users");
 let queueUser = require("../models/queueUser");
 const jwt = require("jsonwebtoken");
 const verifyEmail = require("../utils/verifyEmail");
@@ -9,7 +9,7 @@ const createError = require("http-errors");
 const register = asyncHandler(async function (req, res, next) {
   try {
     const { username, password, email, fullname } = req.body;
-    const account = await accounts.findOne({ $or: [{ username }, { email }] });
+    const account = await Users.findOne({ $or: [{ username }, { email }] });
     if (account) {
       res.status(404).json({
         ...statusResponse(404, "Fail", "this account existed"),
@@ -73,7 +73,7 @@ const verifyRegister = asyncHandler(async function (req, res, next) {
       if (indexUser != null) {
         queueUser.slice(indexUser, 1);
       }
-      const account = new accounts({ ...user });
+      const account = new Users({ ...user });
       await account.save();
       console.log(account);
       res.status(200).json({
@@ -94,7 +94,7 @@ const verifyRegister = asyncHandler(async function (req, res, next) {
 const login = asyncHandler(async function (req, res, next) {
   try {
     const { username, password, email } = req.body;
-    var account = await accounts.findOne({ $or: [{ username }, { email }], password });
+    var account = await Users.findOne({ $or: [{ username }, { email }], password });
     console.log(account);
     if (account) {
       const { _id, username, role, email, fullname } = account;
@@ -116,7 +116,7 @@ const login = asyncHandler(async function (req, res, next) {
 
       return res.status(200).json({
         ...statusResponse(200, "OK", "Login successed!!!"),
-        ...{ data: { _id, username, role, email, fullname }, accessToken, refreshToken },
+        ...{ data: { _id, username, email, fullname }, accessToken, refreshToken },
       });
     } else {
       res.status(401).json({

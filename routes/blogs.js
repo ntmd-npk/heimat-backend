@@ -9,7 +9,8 @@ const {
   deleteBlog,
   putBlog,
   getAllPostOfAllUsers,
-} = require("../controllers/controller.posts");
+  getBlogsByCategory,
+} = require("../controllers/controller.blogs");
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -20,13 +21,13 @@ var storage = multer.diskStorage({
   },
 });
 var upload = multer({ storage: storage });
-
+router.get("/by-category", getBlogsByCategory);
 router.get("/all", getAllPostOfAllUsers);
-router.get("/:idBlog", getBlog);
+router.get("/:id", getBlog);
 router.get("/", getAllBlogs);
 router.post("/", verifyToken, upload.single("cover"), postBlog);
 router
-  .route("/:idBlog")
+  .route("/:id")
   .delete(verifyToken, deleteBlog)
   .put(verifyToken, upload.single("cover"), putBlog);
 module.exports = router;

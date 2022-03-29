@@ -1,60 +1,62 @@
 require("dotenv").config();
-const express = require("express");
 const path = require("path");
-const config = require("./configs/config");
-const bodyParser = require("body-parser");
 const logger = require("morgan");
-
+const express = require("express");
+const bodyParser = require("body-parser");
+const config = require("./configs/config");
 const DBconnection = require("./configs/db");
 
-const accounts = require("./models/user");
-const asyncHandler = require("./middlewares/async");
-
-const app = express();
+const blogs = require("./routes/blogs");
 const authRoutes = require("./routes/auth");
+const categories = require("./routes/categories");
+const notifications = require("./routes/notifications");
+
 const { notFound, handleNotFound } = require("./utils/handleError");
-const posts = require("./routes/posts");
-var cors = require("cors");
-
 DBconnection();
-
-var corsOptions = {
-  origin: "*",
-};
+const app = express();
+const cors = require("cors");
+const corsOptions = { origin: "*" };
 
 app.use("/public/images", express.static(path.join(__dirname, "/public/images")));
 app.use("/public/video", express.static(path.join(__dirname, "/public/video")));
 
-app.use(cors(corsOptions));
-app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
-app.use(bodyParser.json({ limit: "50mb" }));
 app.use(logger("dev"));
+app.use(cors(corsOptions));
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 
 const versionApi = (routeName) => `/api/v1/${routeName}`;
-app.use(versionApi("auth"), authRoutes);
-app.use(versionApi("posts"), posts);
 
+app.use(versionApi("posts"), blogs);
+app.use(versionApi("auth"), authRoutes);
+app.use(versionApi("categories"), categories);
+app.use(versionApi("notifications"), notifications);
+//=================================================================
+// const Blogs = require("./models/blogs");
+// const asyncHandler = require("./middlewares/async");
+// const mongoose = require("mongoose");
 // app.post(
-//   "/add-user",
+//   "/add",
 //   asyncHandler(async (req, res, next) => {
-//     const { user } = req.body;
-//     const account = new accounts({ ...user });
-//     const result = await account.save();
-//     res.status(200).json({ result });
+//     const temp = req.body.blog;
+//     console.log(temp);
+//     temp.user_id = mongoose.Types.ObjectId(temp.user_id);
+//     temp.category_id = mongoose.Types.ObjectId(temp.category_id);
+//     const blog = new Blogs({ ...temp });
+//     await blog.save();
+//     res.json({ blog });
 //   })
 // );
-
-// Handle error
+//=================================================================
 app.use(notFound);
 app.use(handleNotFound);
 
-//Open port
 app.listen(config.PORT, function (err) {
   if (!err) {
     console.log(
       `Server running in ${config.ENV} mode on port ${config.PORT} - http://localhost:${config.PORT}`
     );
   } else {
-    console.log("sever run failly");
+    console.log("Sever run failly");
   }
 });
