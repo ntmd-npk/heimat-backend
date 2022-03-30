@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { listMessagesSchema } = require("./listMessages");
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
@@ -11,6 +10,7 @@ const UserSchema = new Schema({
   password: {
     type: String,
     minlength: [6, "Password requied at least 6 character"],
+    required: true,
     select: false,
   },
   role: {
@@ -42,7 +42,8 @@ const UserSchema = new Schema({
   },
   status: {
     type: String,
-    default: null,
+    enum: ["Online", "Offline", "none"],
+    default: "none",
   },
   fullname: {
     type: String,
@@ -57,16 +58,15 @@ const UserSchema = new Schema({
     type: String,
     default: null,
   },
-  follow: [String],
-  listMessages: {
-    type: [listMessagesSchema],
-    default: [
+  follows: {
+    type: [
       {
-        _id: 0,
+        type: mongoose.Schema.ObjectId,
+        ref: "users",
       },
     ],
-    select: false,
+    default: [],
   },
 });
 
-module.exports = mongoose.model("Users", UserSchema);
+module.exports = mongoose.model("users", UserSchema);

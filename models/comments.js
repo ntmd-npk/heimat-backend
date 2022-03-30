@@ -2,8 +2,13 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const commentSchema = new Schema({
+  from_blog_id: {
+    type: mongoose.Schema.ObjectId,
+    ref: "blogs",
+  },
   from_user_id: {
     type: mongoose.Schema.ObjectId,
+    ref: "users",
   },
   content: {
     type: String,
@@ -19,7 +24,4 @@ const commentSchema = new Schema({
   },
 });
 
-module.exports = {
-  commentSchema,
-  comment: mongoose.model("Comment", commentSchema),
-};
+module.exports = mongoose.model("comments", commentSchema);
