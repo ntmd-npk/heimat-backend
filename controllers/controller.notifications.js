@@ -4,16 +4,16 @@ const asyncHandler = require("../middlewares/async");
 const mongoose = require("mongoose");
 
 const getNotification = asyncHandler(async (req, res, next) => {
-  res.send("get");
+  res.send("Choa đã cho bây dùng mô mà đòi có thông báo?");
 });
 const postNotification = asyncHandler(async (req, res, next) => {
-  res.send("post");
+  res.send("Choa đã cho bây dùng mô mà đòi có thông báo?");
 });
 const sendNotification = asyncHandler(async (req, res, next) => {
-  res.send("send");
+  res.send("Choa đã cho bây dùng mô mà đòi có thông báo?");
 });
 const deleteNotification = asyncHandler(async (req, res, next) => {
-  res.send("delete");
+  res.send("Choa đã cho bây dùng mô mà đòi có thông báo?");
 });
 
 module.exports = {

@@ -28,7 +28,7 @@ app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 
 const versionApi = (routeName) => `/api/v1/${routeName}`;
 
-app.use(versionApi("posts"), blogs);
+app.use(versionApi("blogs"), blogs);
 app.use(versionApi("users"), users);
 app.use(versionApi("auth"), authRoutes);
 app.use(versionApi("categories"), categories);

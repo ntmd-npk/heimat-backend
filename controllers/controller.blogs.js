@@ -152,10 +152,17 @@ const getBlog = asyncHandler(async (req, res, next) => {
 const postBlog = asyncHandler(async function (req, res, next) {
   try {
     const user_id = req._id;
-    const data = req.body.blog;
-    data.user_id = mongoose.Types.ObjectId(user_id);
-    data.category_id = mongoose.Types.ObjectId(data.category_id);
-    const blog = new Blogs({ ...data });
+    var Blog = req.body.blog;
+    if (!Blog) {
+      Blog = JSON.parse(req.body.blog);
+    }
+    const file = req.file;
+    if (!file) {
+      Blog.cover = process.env.URL_FILE + file.filename;
+    }
+    Blog.user_id = mongoose.Types.ObjectId(user_id);
+    Blog.category_id = mongoose.Types.ObjectId(data.category_id);
+    const blog = new Blogs({ ...Blog });
     const result = await blog.save();
     res.status(200).json({ ...statusResponse(200, "OK", "Successed"), result: { ...result._doc } });
   } catch {
@@ -179,8 +186,10 @@ const deleteBlog = asyncHandler(async (req, res, next) => {
 const putBlog = asyncHandler(async (req, res, next) => {
   try {
     const user_id = req._id;
-    //var Blog = JSON.parse(req.body.blog);
     var Blog = req.body.blog;
+    if (!Blog) {
+      Blog = JSON.parse(req.body.blog);
+    }
     const { id } = req.params;
     const file = req?.file;
 
