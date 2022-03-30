@@ -157,7 +157,7 @@ const postBlog = asyncHandler(async function (req, res, next) {
     data.category_id = mongoose.Types.ObjectId(data.category_id);
     const blog = new Blogs({ ...data });
     const result = await blog.save();
-    res.status(200).json({ ...statusResponse(200, "OK", "Successed"), blog: { ...result._doc } });
+    res.status(200).json({ ...statusResponse(200, "OK", "Successed"), result: { ...result._doc } });
   } catch {
     res.status(500).json({ ...statusResponse(500, "Fail", "Cant save your posts") });
   }

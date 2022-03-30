@@ -113,11 +113,17 @@ const login = asyncHandler(async function (req, res, next) {
           expiresIn: "24h",
         }
       );
-
-      return res.status(200).json({
-        ...statusResponse(200, "OK", "Login successed!!!"),
-        ...{ data: { _id, username, email, fullname }, accessToken, refreshToken },
-      });
+      if (role == "admin") {
+        return res.status(200).json({
+          ...statusResponse(200, "OK", "Login successed!!!"),
+          ...{ data: { _id, username, email, fullname, role }, accessToken, refreshToken },
+        });
+      } else {
+        return res.status(200).json({
+          ...statusResponse(200, "OK", "Login successed!!!"),
+          ...{ data: { _id, username, email, fullname }, accessToken, refreshToken },
+        });
+      }
     } else {
       res.status(401).json({
         ...statusResponse(

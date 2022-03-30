@@ -7,6 +7,7 @@ const config = require("./configs/config");
 const DBconnection = require("./configs/db");
 
 const blogs = require("./routes/blogs");
+const users = require("./routes/users");
 const authRoutes = require("./routes/auth");
 const categories = require("./routes/categories");
 const notifications = require("./routes/notifications");
@@ -28,6 +29,7 @@ app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 const versionApi = (routeName) => `/api/v1/${routeName}`;
 
 app.use(versionApi("posts"), blogs);
+app.use(versionApi("users"), users);
 app.use(versionApi("auth"), authRoutes);
 app.use(versionApi("categories"), categories);
 app.use(versionApi("notifications"), notifications);

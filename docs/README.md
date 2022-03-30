@@ -1,82 +1,64 @@
 🔥 Heimat 🔥
 
-# **Authrization**
+# **Authrizations**
 
 ## 1. **_Register_**
 
 ```
-api: http://localhost:5000/api/v1/auth/register
-
-example about data in body:
+Method: POST
+http://localhost:5000/api/v1/auth/register/
+Type: JSON
 {
-    "username": "duyen01",
+    "username": "duyen13",
     "email": "nhatdn.it@gmail.com",
-    "password": "duyen01"
+    "password": "duyen01",
+    "fullname": "Nguyễn Thị Mỹ Duyên"
 }
 ```
 
-![Register in Postman](/backend/docs/register.png)
-
-## 2. **_Verify register_**
-
-```
-api: http://localhost:5000/api/v1/auth/verification
-
-example about data in body:
-{
-    "email": "nhatdn.it@gmail.com",
-    "code": "305257"
-}
-```
-
-![Register in Postman](/backend/docs/verification.png)
-
+## 2. **_Verification_**
+Method: POST
+http://localhost:5000/api/v1/auth/verification/
 ## 3. **_Login_**
 
 ```
-api: http://localhost:5000/api/v1/auth/login
-
-example about data in body:
-CASE 1:
+Method: POST
+http://localhost:5000/api/v1/auth/login/
+Type: JSON
 {
-    "email": "nhatdn.it@gmail.com",
-    "password": "duyen01"
+    "username" : "nhat",
+    "password": "nhat2572001"
 }
 ```
 
-![Register in Postman](/backend/docs/loginByEmail.png)
+## 4. **_Logout_** - Kèm thêm token
 
-```
-CASE 2:
-{
-    "username": "duyen01",
-    "password": "duyen01"
-}
-```
+# **Blogs**
 
-![Register in Postman](/backend/docs/loginByUsername.png)
+## 1. **_Create_**
 
-## 4. **_logout_**
+## 1. **_Update_**
 
-```
-api: http://localhost:5000/api/v1/auth/logout
+## 1. **_Delete_**
 
-example about data in body:
-none
+## 1. **_Get 1 blog of user_**
 
-```
+## 1. **_Get many blogs of user_**
 
-![Register in Postman](/backend/docs/verification.png)
+## 1. **_Get many blogs of categroy_**
 
-## 5. List accounts created:
+## 1. **_Get all blogs_**
 
-|  **Account**  | **Password** |
-| ------------- | ------------ |
-| duyen         | duyen        |
-| nhat          | nhat         |
-| hoa           | hoa          |
-| hieu          | hieu         |
-| huyen         | huyen        |
-| phuc          | phuc         |
+## 1.**_Users_**
 
--> 26/2/2022 <-
+## 1. **_Get user's informations _**
+
+# **Categories**
+
+## 1. **_Create_** Admin
+
+## 1. **_Update_** Admin
+
+## 1. **_Delete_** Admin
+
+## 1. **_get Category_**
