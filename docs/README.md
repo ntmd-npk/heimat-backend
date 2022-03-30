@@ -42,8 +42,10 @@ Type: JSON
 
 ## 4. **_Logout_** - Kèm thêm token
 
+```
 Method: POST
 http://localhost:5000/api/v1/auth/logout/
+```
 
 # **Blogs**
 
