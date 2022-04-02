@@ -157,16 +157,16 @@ const postBlog = asyncHandler(async function (req, res, next) {
       Blog = JSON.parse(req.body.blog);
     }
     const file = req.file;
-    if (!file) {
+    if (file) {
       Blog.cover = process.env.URL_FILE + file.filename;
     }
     Blog.user_id = mongoose.Types.ObjectId(user_id);
-    Blog.category_id = mongoose.Types.ObjectId(data.category_id);
+    Blog.category_id = mongoose.Types.ObjectId(Blog.category_id);
     const blog = new Blogs({ ...Blog });
     const result = await blog.save();
     res.status(200).json({ ...statusResponse(200, "OK", "Successed"), result: { ...result._doc } });
   } catch {
-    res.status(500).json({ ...statusResponse(500, "Fail", "Cant save your posts") });
+    res.status(500).json({ ...statusResponse(500, "Fail", "Cant save your blogs") });
   }
 });
 
@@ -203,7 +203,7 @@ const putBlog = asyncHandler(async (req, res, next) => {
       );
     }
     if (Blog?.content != undefined)
-      await postsDB.updateOne(
+      await Blogs.updateOne(
         {
           user_id: mongoose.Types.ObjectId(user_id),
           _id: mongoose.Types.ObjectId(id),
@@ -211,7 +211,7 @@ const putBlog = asyncHandler(async (req, res, next) => {
         { $set: { content: Blog.content } }
       );
     if (Blog?.created_date != undefined)
-      await postsDB.updateOne(
+      await Blogs.updateOne(
         {
           user_id: mongoose.Types.ObjectId(user_id),
           _id: mongoose.Types.ObjectId(id),
@@ -219,7 +219,7 @@ const putBlog = asyncHandler(async (req, res, next) => {
         { $set: { created_date: Blog.created_date } }
       );
     if (Blog?.category_id != undefined)
-      await postsDB.updateOne(
+      await Blogs.updateOne(
         {
           user_id: mongoose.Types.ObjectId(user_id),
           _id: mongoose.Types.ObjectId(id),
@@ -227,7 +227,7 @@ const putBlog = asyncHandler(async (req, res, next) => {
         { $set: { category_id: Blog.category_id } }
       );
     if (Blog?.description != undefined)
-      await postsDB.updateOne(
+      await Blogs.updateOne(
         {
           user_id: mongoose.Types.ObjectId(user_id),
           _id: mongoose.Types.ObjectId(id),
@@ -235,7 +235,7 @@ const putBlog = asyncHandler(async (req, res, next) => {
         { $set: { description: Blog.description } }
       );
     if (file != undefined)
-      await postsDB.updateOne(
+      await Blogs.updateOne(
         {
           user_id: mongoose.Types.ObjectId(user_id),
           _id: mongoose.Types.ObjectId(id),

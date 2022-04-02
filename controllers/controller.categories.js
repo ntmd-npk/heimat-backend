@@ -12,18 +12,26 @@ const getCategories = asyncHandler(async (req, res, next) => {
 });
 const addCategory = asyncHandler(async (req, res, next) => {
   const { name } = req.body;
-  try {
-    const result = await categories.findOne({ name });
-    if (result) {
-      res.status(400).json({ ...statusResponse(500, "Fail", "This category existed") });
-    } else {
-      const cate = new category({ name });
-      await cate.save();
-      res.status(200).json({ ...statusResponse(200, "OK", "This category created") });
-    }
-  } catch {
-    res.status(500).json({ ...statusResponse(500, "Fail", "Couldn't add this category") });
+  const result = await categories.findOne({ name });
+  if (result) {
+    res.status(400).json({ ...statusResponse(500, "Fail", "This category existed") });
+  } else {
+    const cate = new categories({ name });
+    await cate.save();
+    res.status(200).json({ ...statusResponse(200, "OK", "This category created") });
   }
+  // try {
+  //   const result = await categories.findOne({ name });
+  //   if (result) {
+  //     res.status(400).json({ ...statusResponse(500, "Fail", "This category existed") });
+  //   } else {
+  //     const cate = new category({ name });
+  //     await cate.save();
+  //     res.status(200).json({ ...statusResponse(200, "OK", "This category created") });
+  //   }
+  // } catch {
+  //   res.status(500).json({ ...statusResponse(500, "Fail", "Couldn't add this category") });
+  // }
 });
 const updateCategroy = asyncHandler(async (req, res, next) => {
   try {

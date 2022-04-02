@@ -113,6 +113,7 @@ const login = asyncHandler(async function (req, res, next) {
           expiresIn: "24h",
         }
       );
+      console.log(role);
       if (role == "admin") {
         return res.status(200).json({
           ...statusResponse(200, "OK", "Login successed!!!"),

@@ -5,7 +5,6 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const config = require("./configs/config");
 const DBconnection = require("./configs/db");
-
 const blogs = require("./routes/blogs");
 const users = require("./routes/users");
 const authRoutes = require("./routes/auth");
@@ -17,7 +16,8 @@ DBconnection();
 const app = express();
 const cors = require("cors");
 const corsOptions = { origin: "*" };
-
+//var server = require("http").Server(app);
+var io = require("socket.io")(4000);
 app.use("/public/images", express.static(path.join(__dirname, "/public/images")));
 app.use("/public/video", express.static(path.join(__dirname, "/public/video")));
 
@@ -52,6 +52,15 @@ app.use(versionApi("notifications"), notifications);
 //=================================================================
 app.use(notFound);
 app.use(handleNotFound);
+
+io.on("connection", (socket) => {
+  console.log("connect by socket.io");
+  socket.emit("start", { name: "nhat" });
+
+  socket.on("", (data) => {
+    console.log(data);
+  });
+});
 
 app.listen(config.PORT, function (err) {
   if (!err) {
