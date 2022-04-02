@@ -6,7 +6,4 @@ const categorySchema = new Schema({
     type: String,
   },
 });
-module.exports = {
-  categorySchema,
-  categories: mongoose.model("categories", categorySchema),
-};
+module.exports = mongoose.model("categories", categorySchema);
