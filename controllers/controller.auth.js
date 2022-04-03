@@ -97,7 +97,7 @@ const login = asyncHandler(async function (req, res, next) {
     var account = await Users.findOne({ $or: [{ username }, { email }], password });
     console.log(account);
     if (account) {
-      const { _id, username, role, email, fullname } = account;
+      const { _id, username, role, email, fullname, cover, description, avatar } = account;
       const accessToken = jwt.sign(
         { _id, username, role, email, fullname },
         process.env.TOKEN_SECRET,
@@ -117,12 +117,20 @@ const login = asyncHandler(async function (req, res, next) {
       if (role == "admin") {
         return res.status(200).json({
           ...statusResponse(200, "OK", "Login successed!!!"),
-          ...{ data: { _id, username, email, fullname, role }, accessToken, refreshToken },
+          ...{
+            data: { _id, username, email, fullname, role, cover, description, avatar },
+            accessToken,
+            refreshToken,
+          },
         });
       } else {
         return res.status(200).json({
           ...statusResponse(200, "OK", "Login successed!!!"),
-          ...{ data: { _id, username, email, fullname }, accessToken, refreshToken },
+          ...{
+            data: { _id, username, email, fullname, cover, description, avatar },
+            accessToken,
+            refreshToken,
+          },
         });
       }
     } else {

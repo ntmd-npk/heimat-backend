@@ -123,6 +123,14 @@ const getBlog = asyncHandler(async (req, res, next) => {
         },
       },
       {
+        $lookup: {
+          from: "comments",
+          localField: "listComment",
+          foreignField: "_id",
+          as: "comments",
+        },
+      },
+      {
         $project: {
           "category.name": 1,
           user: {
