@@ -12,26 +12,18 @@ const getCategories = asyncHandler(async (req, res, next) => {
 });
 const addCategory = asyncHandler(async (req, res, next) => {
   const { name } = req.body;
-  const result = await categories.findOne({ name });
-  if (result) {
-    res.status(400).json({ ...statusResponse(500, "Fail", "This category existed") });
-  } else {
-    const cate = new categories({ name });
-    await cate.save();
-    res.status(200).json({ ...statusResponse(200, "OK", "This category created") });
+  try {
+    const result = await categories.findOne({ name });
+    if (result) {
+      res.status(400).json({ ...statusResponse(500, "Fail", "This category existed") });
+    } else {
+      const cate = new categories({ name });
+      await cate.save();
+      res.status(200).json({ ...statusResponse(200, "OK", "This category created") });
+    }
+  } catch {
+    res.status(500).json({ ...statusResponse(500, "Fail", "Couldn't add this category") });
   }
-  // try {
-  //   const result = await categories.findOne({ name });
-  //   if (result) {
-  //     res.status(400).json({ ...statusResponse(500, "Fail", "This category existed") });
-  //   } else {
-  //     const cate = new category({ name });
-  //     await cate.save();
-  //     res.status(200).json({ ...statusResponse(200, "OK", "This category created") });
-  //   }
-  // } catch {
-  //   res.status(500).json({ ...statusResponse(500, "Fail", "Couldn't add this category") });
-  // }
 });
 const updateCategroy = asyncHandler(async (req, res, next) => {
   try {
@@ -40,7 +32,7 @@ const updateCategroy = asyncHandler(async (req, res, next) => {
       { _id: mongoose.Types.ObjectId(category_id) },
       { $set: { name } }
     );
-    res.status(200).json({ ...statusResponse(200, "OK", "This category updated") });
+    res.status(200).json({ ...statusResponse(200, "OK", "This category updated"), ...result });
   } catch {
     res.status(500).json({ ...statusResponse(500, "Fail", "Couldn't update this category") });
   }

@@ -138,18 +138,19 @@ Method: POST
 http://localhost:5000/api/v1/categories/
 Type: JSON
 {
-    "category_id": "6241c0d5aa9639fc57a1a70c"
+    "name" : "new categories"
 }
 ```
 
 ## 2. **_Update_** Admin - Kèm thêm token
 
 ```
-Method: POST
+Method: PUT
 http://localhost:5000/api/v1/categories/
 Type: JSON
 {
-    "category_id": "6241c0d5aa9639fc57a1a70c"
+    "category_id": "6241c0d5aa9639fc57a1a70c",
+    "name": "edit category name"
 }
 ```
 
