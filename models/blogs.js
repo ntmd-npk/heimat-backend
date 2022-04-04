@@ -18,12 +18,27 @@ const blogSchema = new Schema({
     type: String,
   },
   upvote: {
-    type: Number,
-    default: 0,
+    type: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "users",
+      },
+    ],
+    default: [],
   },
   downvote: {
-    type: Number,
-    default: 0,
+    type: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "users",
+      },
+    ],
+    default: [],
+  },
+  status: {
+    type: String,
+    enum: ["public", "private", "block"],
+    default: "public",
   },
   listComment: {
     type: [

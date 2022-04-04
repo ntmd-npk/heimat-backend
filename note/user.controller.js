@@ -5,7 +5,9 @@ let PostsUsers = require("../models/posts");
 
 function login(req, res) {
   const { username, password } = req.body;
-  const result = FakeDBUsers.find((user) => user.username == username && user.password == password);
+  const result = FakeDBUsers.find(
+    (user) => user.username == username && user.password == password
+  ).lean();
   if (!result) res.json({ result: "your account doesn't exist" }).sendStatus(401);
   const accessToken = jwt.sign({ username }, "my-secret", {
     expiresIn: "30s",

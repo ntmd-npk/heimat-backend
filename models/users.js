@@ -25,10 +25,15 @@ const UserSchema = new Schema({
     unique: [true, "User already exits"],
     match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, "Please add a valid email"],
   },
+  block: {
+    type: Boolean,
+    select: false,
+    default: false,
+  },
   avatar: {
     type: String,
     default:
-      "https://previews.123rf.com/images/ammentorp/ammentorp1608/ammentorp160800238/61075810-hombre-que-monta-la-motocicleta-con-una-mujer-en-el-camino-rural-pareja-joven-en-moto-a-trav%C3%A9s-de-la.jpg",
+      "https://banner2.cleanpng.com/20180619/iui/kisspng-user-profile-aurangabad-computer-icons-great-value-5b299da7d8ea44.3103164415294539918885.jpg",
   },
   cover: {
     type: String,
@@ -58,7 +63,16 @@ const UserSchema = new Schema({
     type: String,
     default: null,
   },
-  follows: {
+  followers: {
+    type: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "users",
+      },
+    ],
+    default: [],
+  },
+  following: {
     type: [
       {
         type: mongoose.Schema.ObjectId,

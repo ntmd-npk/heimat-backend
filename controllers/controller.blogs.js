@@ -2,6 +2,7 @@ const asyncHandler = require("../middlewares/async");
 const statusResponse = require("../utils/statusResponse");
 const mongoose = require("mongoose");
 const Blogs = require("../models/blogs");
+const Comments = require("../models/comments");
 
 const getBlogsByCategory = asyncHandler(async (req, res, next) => {
   const { category_id } = req.query;
@@ -123,16 +124,10 @@ const getBlog = asyncHandler(async (req, res, next) => {
         },
       },
       {
-        $lookup: {
-          from: "comments",
-          localField: "listComment",
-          foreignField: "_id",
-          as: "comments",
-        },
-      },
-      {
         $project: {
-          "category.name": 1,
+          category: {
+            name: 1,
+          },
           user: {
             avatar: 1,
             cover: 1,
@@ -150,10 +145,48 @@ const getBlog = asyncHandler(async (req, res, next) => {
         },
       },
     ]).exec();
+
+    const listComments = await Comments.aggregate([
+      {
+        $match: {
+          from_blog_id: mongoose.Types.ObjectId(id),
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "from_user_id",
+          foreignField: "_id",
+          as: "author",
+        },
+      },
+      {
+        $project: {
+          category: {
+            name: 1,
+          },
+          author: {
+            avatar: 1,
+            cover: 1,
+            username: 1,
+            fullname: 1,
+            description: 1,
+            _id: 1,
+          },
+          from_blog_id: 1,
+          content: 1,
+          created_date: 1,
+          upvote: 1,
+          downvote: 1,
+          from_user_id: 1,
+        },
+      },
+    ]);
+    console.log("=============================================================");
     console.log(result);
-    res.json({ result });
-  } catch {
-    res.json({ result });
+    res.json({ result, listComments });
+  } catch (e) {
+    res.json({ e });
   }
 });
 
@@ -305,6 +338,32 @@ const getAllPostOfAllUsers = asyncHandler(async (req, res, next) => {
     res.status(500).json({ ...statusResponse(500, "Fail", "Couldn't get blogs of all users") });
   }
 });
+const upvoteBlog = asyncHandler(async (req, res, next) => {
+  const user_id = req._id;
+  const { idBlog } = req.params;
+  try {
+    await Blogs.updateOne(
+      { _id: mongoose.Types.ObjectId(idBlog) },
+      { $pull: { downvote: user_id } }
+    );
+    res.status(200).json({ ...statusResponse(200, "OK", "Successfully") });
+  } catch (e) {
+    res.status(500).json({ ...statusResponse(500, "Fail", "Couldn't upvote blog") });
+  }
+});
+const downvoteBlog = asyncHandler(async (req, res, next) => {
+  const user_id = req._id;
+  const { idBlog } = req.body;
+  try {
+    await Blogs.updateOne(
+      { _id: mongoose.Types.ObjectId(idBlog) },
+      { $push: { downvote: user_id } }
+    );
+    res.status(200).json({ ...statusResponse(200, "OK", "Successfully") });
+  } catch (e) {
+    res.status(500).json({ ...statusResponse(500, "Fail", "Couldn't downvote blog") });
+  }
+});
 module.exports = {
   getBlog,
   putBlog,
@@ -313,4 +372,6 @@ module.exports = {
   getAllBlogs,
   getBlogsByCategory,
   getAllPostOfAllUsers,
+  upvoteBlog,
+  downvoteBlog,
 };

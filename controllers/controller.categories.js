@@ -4,7 +4,7 @@ const categories = require("../models/categories");
 const mongoose = require("mongoose");
 const getCategories = asyncHandler(async (req, res, next) => {
   try {
-    const result = await categories.find();
+    const result = await categories.find().lean();
     res.status(200).json({ categories: result });
   } catch {
     res.status(500).json({ ...statusResponse(500, "Fail", "Couldn't get categories data") });
@@ -13,7 +13,7 @@ const getCategories = asyncHandler(async (req, res, next) => {
 const addCategory = asyncHandler(async (req, res, next) => {
   const { name } = req.body;
   try {
-    const result = await categories.findOne({ name });
+    const result = await categories.findOne({ name }).lean();
     if (result) {
       res.status(400).json({ ...statusResponse(500, "Fail", "This category existed") });
     } else {
