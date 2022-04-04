@@ -1,7 +1,7 @@
 const asyncHandler = require("../middlewares/async");
 const Users = require("../models/users");
 const mongoose = require("mongoose");
-
+const statusResponse = require("../utils/statusResponse");
 const getUser = asyncHandler(async (req, res, next) => {
   const id = req._id;
   try {
@@ -49,7 +49,7 @@ const addNewAdmin = asyncHandler(async (req, res, next) => {
     res.status(500).json({ ...statusResponse(500, "Fail", "Couldn't add new account admin") });
   }
 });
-const removeNewAdmin = asyncHandler(async (req, res, next) => {
+const removeAdmin = asyncHandler(async (req, res, next) => {
   const role = req.role;
   const user_id = req.body.admin_id;
   try {
@@ -68,5 +68,5 @@ module.exports = {
   getAllUsers,
   getAllAdmins,
   addNewAdmin,
-  removeNewAdmin,
+  removeAdmin,
 };
