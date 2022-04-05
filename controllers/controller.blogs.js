@@ -6,6 +6,7 @@ const Comments = require("../models/comments");
 
 const getBlogsByCategory = asyncHandler(async (req, res, next) => {
   const { category_id } = req.query;
+
   const result = await Blogs.aggregate([
     {
       $match: {
@@ -37,6 +38,8 @@ const getBlogsByCategory = asyncHandler(async (req, res, next) => {
           username: 1,
           fullname: 1,
           description: 1,
+          followers: 1,
+          following: 1,
           _id: 1,
         },
         title: 1,
@@ -83,6 +86,8 @@ const getAllBlogs = asyncHandler(async (req, res, next) => {
           cover: 1,
           username: 1,
           fullname: 1,
+          followers: 1,
+          following: 1,
           description: 1,
           _id: 1,
         },
@@ -99,6 +104,15 @@ const getAllBlogs = asyncHandler(async (req, res, next) => {
 });
 
 const getBlog = asyncHandler(async (req, res, next) => {
+  // const { id } = req.params;
+  // const testing = await Blogs.findOne({ _id: mongoose.Types.ObjectId(id) })
+  //   .populate("user_id")
+  //   .populate({
+  //     path: "listComment",
+  //     populate: { path: "listComment" },
+  //   })
+  //   .populate("category_id");
+  // res.json(testing);
   try {
     const { id } = req.params;
     const result = await Blogs.aggregate([
@@ -134,6 +148,8 @@ const getBlog = asyncHandler(async (req, res, next) => {
             username: 1,
             fullname: 1,
             description: 1,
+            followers: 1,
+            following: 1,
             _id: 1,
           },
           title: 1,
@@ -171,11 +187,13 @@ const getBlog = asyncHandler(async (req, res, next) => {
             username: 1,
             fullname: 1,
             description: 1,
+            followers: 1,
+            following: 1,
             _id: 1,
           },
           from_blog_id: 1,
           content: 1,
-          created_date: 1,
+          create_date: 1,
           upvote: 1,
           downvote: 1,
           from_user_id: 1,
@@ -191,24 +209,32 @@ const getBlog = asyncHandler(async (req, res, next) => {
 });
 
 const postBlog = asyncHandler(async function (req, res, next) {
-  try {
-    const user_id = req._id;
-    var Blog = req.body.blog;
-    if (!Blog) {
-      Blog = JSON.parse(req.body.blog);
-    }
-    const file = req.file;
-    if (file) {
-      Blog.cover = process.env.URL_FILE + file.filename;
-    }
-    Blog.user_id = mongoose.Types.ObjectId(user_id);
-    Blog.category_id = mongoose.Types.ObjectId(Blog.category_id);
-    const blog = new Blogs({ ...Blog });
-    const result = await blog.save();
-    res.status(200).json({ ...statusResponse(200, "OK", "Successed"), result: { ...result._doc } });
-  } catch {
-    res.status(500).json({ ...statusResponse(500, "Fail", "Cant save your blogs") });
+  const user_id = req._id;
+  var Blog = JSON.parse(req.body.blog);
+  const file = req.file;
+  if (file) {
+    Blog.cover = process.env.URL_FILE + file.filename;
   }
+  Blog.user_id = mongoose.Types.ObjectId(user_id);
+  Blog.category_id = mongoose.Types.ObjectId(Blog.category_id);
+  const blog = new Blogs({ ...Blog });
+  const result = await blog.save();
+  res.status(200).json({ ...statusResponse(200, "OK", "Successed"), result: { ...result._doc } });
+  // try {
+  //   const user_id = req._id;
+  //   var Blog = JSON.parse(req.body.blog);
+  //   const file = req.file;
+  //   if (file) {
+  //     Blog.cover = process.env.URL_FILE + file.filename;
+  //   }
+  //   Blog.user_id = mongoose.Types.ObjectId(user_id);
+  //   Blog.category_id = mongoose.Types.ObjectId(Blog.category_id);
+  //   const blog = new Blogs({ ...Blog });
+  //   const result = await blog.save();
+  //   res.status(200).json({ ...statusResponse(200, "OK", "Successed"), result: { ...result._doc } });
+  // } catch {
+  //   res.status(500).json({ ...statusResponse(500, "Fail", "Cant save your blogs") });
+  // }
 });
 
 const deleteBlog = asyncHandler(async (req, res, next) => {
@@ -227,10 +253,7 @@ const deleteBlog = asyncHandler(async (req, res, next) => {
 const putBlog = asyncHandler(async (req, res, next) => {
   try {
     const user_id = req._id;
-    var Blog = req.body.blog;
-    if (!Blog) {
-      Blog = JSON.parse(req.body.blog);
-    }
+    var Blog = JSON.parse(req.body.blog);
     const { id } = req.params;
     const file = req?.file;
 

@@ -40,15 +40,6 @@ const blogSchema = new Schema({
     enum: ["public", "private", "block"],
     default: "public",
   },
-  listComment: {
-    type: [
-      {
-        type: mongoose.Schema.ObjectId,
-        ref: "comments",
-      },
-    ],
-    default: [],
-  },
   category_id: {
     type: mongoose.Schema.ObjectId,
     ref: "categories",

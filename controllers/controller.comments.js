@@ -26,9 +26,12 @@ const postComment = asyncHandler(async (req, res, next) => {
 
 const updateComment = asyncHandler(async (req, res, next) => {
   const id = req._id;
-  const { content, _id } = req.body;
+  const { content, comment_id } = req.body;
   try {
-    const result = await Comments.updateOne({ from_user_id: id, _id }, { content });
+    const result = await Comments.updateOne(
+      { from_user_id: mongoose.Types.ObjectId(id), _id: mongoose.Types.ObjectId(comment_id) },
+      { content }
+    );
     res.status(200).json({ ...statusResponse("200", "OK", "Successfully"), result });
   } catch (e) {
     res
@@ -38,9 +41,12 @@ const updateComment = asyncHandler(async (req, res, next) => {
 });
 const deleteComment = asyncHandler(async (req, res, next) => {
   const id = req._id;
-  const { _id } = req.body;
+  const { comment_id } = req.body;
   try {
-    await Comments.findOneAndRemove({ from_user_id: id, _id }).lean();
+    await Comments.findOneAndRemove({
+      from_user_id: mongoose.Types.ObjectId(id),
+      _id: mongoose.Types.ObjectId(comment_id),
+    }).lean();
     res.status(200).json({ ...statusResponse("200", "OK", "Successfully") });
   } catch {
     res
@@ -49,9 +55,9 @@ const deleteComment = asyncHandler(async (req, res, next) => {
   }
 });
 const getComment = asyncHandler(async (req, res, next) => {
-  const _id = req.body;
+  const { comment_id } = req.body;
   try {
-    const result = await Comments.findOne({ _id }).lean();
+    const result = await Comments.findOne({ _id: mongoose.Types.ObjectId(comment_id) }).lean();
     res.status(200).json({ ...statusResponse("200", "OK", "Successfully"), result });
   } catch (e) {
     res
@@ -60,8 +66,84 @@ const getComment = asyncHandler(async (req, res, next) => {
   }
 });
 
+const checkUpvote = asyncHandler(async (req, res, next) => {
+  const user_id = req._id;
+  const { comment_id } = req.body;
+  const comment = await Comments.findOne({ _id: mongoose.Types.ObjectId(comment_id) });
+  await comment.downvote.pull(mongoose.Types.ObjectId(user_id));
+  const result = await comment.upvote.includes(mongoose.Types.ObjectId(user_id));
+  if (result) {
+    await comment.upvote.pull(mongoose.Types.ObjectId(user_id));
+    await comment.save();
+    res
+      .status(200)
+      .json({ ...statusResponse("200", "OK", "You disupvoted this comment"), result: comment });
+  } else {
+    req.comment = comment;
+    next();
+  }
+});
+const checkDownvote = asyncHandler(async (req, res, next) => {
+  const user_id = req._id;
+  const { comment_id } = req.body;
+  const comment = await Comments.findOne({ _id: mongoose.Types.ObjectId(comment_id) });
+  await comment.upvote.pull(mongoose.Types.ObjectId(user_id));
+  const result = await comment.downvote.includes(mongoose.Types.ObjectId(user_id));
+  if (result) {
+    await comment.downvote.pull(mongoose.Types.ObjectId(user_id));
+    await comment.save();
+    res
+      .status(200)
+      .json({ ...statusResponse("200", "OK", "You disdownvoted this comment"), result: comment });
+  } else {
+    req.comment = comment;
+    next();
+  }
+});
+
+const upvoteComment = asyncHandler(async (req, res, next) => {
+  const user_id = req._id;
+  console.log("xxxxxxxxxxxxxxxxxxxx");
+  console.log(user_id);
+  const comment = req.comment;
+  await comment.upvote.push(mongoose.Types.ObjectId(user_id));
+  await comment.save();
+  res.status(200).json({ ...statusResponse("200", "OK", "Successfully"), result: comment });
+});
+const downvoteComment = asyncHandler(async (req, res, next) => {
+  const user_id = req._id;
+  const comment = req.comment;
+  await comment.downvote.push(mongoose.Types.ObjectId(user_id));
+  await comment.save();
+  res.status(200).json({ ...statusResponse("200", "OK", "Successfully"), result: comment });
+});
+
+const getUserUpvote = asyncHandler(async (req, res, next) => {
+  const { comment_id } = req.body;
+  const comment = await Comments.findOne({ _id: mongoose.Types.ObjectId(comment_id) }).populate(
+    "upvote",
+    "fullname username avatar cover"
+  );
+  res.status(200).json({ ...statusResponse("200", "OK", "Successfully"), result: comment });
+});
+
+const getUserDownvote = asyncHandler(async (req, res, next) => {
+  const { comment_id } = req.body;
+  const comment = await Comments.findOne({ _id: mongoose.Types.ObjectId(comment_id) }).populate(
+    "downvote",
+    "fullname username avatar cover"
+  );
+  res.status(200).json({ ...statusResponse("200", "OK", "Successfully"), result: comment });
+});
 module.exports = {
   postComment,
   updateComment,
   deleteComment,
+  upvoteComment,
+  checkUpvote,
+  checkDownvote,
+  upvoteComment,
+  downvoteComment,
+  getUserDownvote,
+  getUserUpvote,
 };
