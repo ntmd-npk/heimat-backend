@@ -304,7 +304,7 @@ const putBlog = asyncHandler(async (req, res, next) => {
           user_id: mongoose.Types.ObjectId(user_id),
           _id: mongoose.Types.ObjectId(id),
         },
-        { $set: { file: process.env.URL_FILE + file.filename } }
+        { $set: { cover: process.env.URL_FILE + file.filename } }
       );
     res.status(200).json({ ...statusResponse(200, "OK", "Successed") });
   } catch {

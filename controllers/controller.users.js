@@ -63,10 +63,64 @@ const removeAdmin = asyncHandler(async (req, res, next) => {
     res.status(400).json({ ...statusResponse(400, "Fail", "Couldn't delete this account") });
   }
 });
+
+const updateProfile = asyncHandler(async (req, res, next) => {
+  try {
+    const user_id = req._id;
+    const file = req?.file;
+    if (req.body?.profile) {
+      const profile = JSON.parse(req.body.profile);
+      if (profile?.fullname != undefined) {
+        await Users.updateOne(
+          {
+            _id: mongoose.Types.ObjectId(user_id),
+          },
+          { $set: { fullname: profile.fullname } }
+        );
+      }
+      if (profile?.description != undefined) {
+        await Users.updateOne(
+          {
+            _id: mongoose.Types.ObjectId(user_id),
+          },
+          { $set: { description: profile.description } }
+        );
+      }
+      if (profile?.gender != undefined) {
+        await Users.updateOne(
+          {
+            _id: mongoose.Types.ObjectId(user_id),
+          },
+          { $set: { gender: profile.gender } }
+        );
+      }
+      if (profile?.birthday != undefined) {
+        await Users.updateOne(
+          {
+            _id: mongoose.Types.ObjectId(user_id),
+          },
+          { $set: { birthday: profile.birthday } }
+        );
+      }
+    }
+    if (file != undefined)
+      await Users.updateOne(
+        {
+          _id: mongoose.Types.ObjectId(user_id),
+        },
+        { $set: { avatar: process.env.URL_FILE + file.filename } }
+      );
+    res.status(200).json({ ...statusResponse(200, "OK", "Successed") });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ ...statusResponse(500, "Fail", "Errored") });
+  }
+});
 module.exports = {
   getUser,
   getAllUsers,
   getAllAdmins,
   addNewAdmin,
   removeAdmin,
+  updateProfile,
 };
