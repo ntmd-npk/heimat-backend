@@ -8,6 +8,7 @@ const DBconnection = require("./configs/db");
 const blogs = require("./routes/blogs");
 const users = require("./routes/users");
 const authRoutes = require("./routes/auth");
+const comments = require("./routes/comments");
 const categories = require("./routes/categories");
 const notifications = require("./routes/notifications");
 
@@ -31,25 +32,29 @@ const versionApi = (routeName) => `/api/v1/${routeName}`;
 app.use(versionApi("blogs"), blogs);
 app.use(versionApi("users"), users);
 app.use(versionApi("auth"), authRoutes);
+app.use(versionApi("comments"), comments);
 app.use(versionApi("categories"), categories);
 app.use(versionApi("notifications"), notifications);
 //=================================================================
-// const Blogs = require("./models/blogs");
+// const Comments = require("./models/comments");
 // const asyncHandler = require("./middlewares/async");
 // const mongoose = require("mongoose");
 // app.post(
 //   "/add",
 //   asyncHandler(async (req, res, next) => {
-//     const temp = req.body.blog;
-//     console.log(temp);
-//     temp.user_id = mongoose.Types.ObjectId(temp.user_id);
-//     temp.category_id = mongoose.Types.ObjectId(temp.category_id);
-//     const blog = new Blogs({ ...temp });
-//     await blog.save();
-//     res.json({ blog });
+//     const { from_blog_id, from_user_id, content, create_date } = req.body;
+//     const comment = new Comments({
+//       from_blog_id: mongoose.Types.ObjectId(from_blog_id),
+//       from_user_id: mongoose.Types.ObjectId(from_user_id),
+//       content,
+//       create_date,
+//     });
+//     const result = await comment.save();
+//     res.json({ result });
 //   })
 // );
 //=================================================================
+
 app.use(notFound);
 app.use(handleNotFound);
 

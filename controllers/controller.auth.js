@@ -9,7 +9,7 @@ const createError = require("http-errors");
 const register = asyncHandler(async function (req, res, next) {
   try {
     const { username, password, email, fullname } = req.body;
-    const account = await Users.findOne({ $or: [{ username }, { email }] });
+    const account = await Users.findOne({ $or: [{ username }, { email }] }).lean();
     if (account) {
       res.status(404).json({
         ...statusResponse(404, "Fail", "this account existed"),
@@ -18,7 +18,7 @@ const register = asyncHandler(async function (req, res, next) {
       verifyEmail(email)
         .then((result) => {
           if (result.status) {
-            var user = queueUser.find((user) => user.email === email);
+            var user = queueUser.find((user) => user.email === email).lean();
             if (user) {
               user.code = result.code;
             } else {
@@ -51,13 +51,15 @@ const verifyRegister = asyncHandler(async function (req, res, next) {
   try {
     const { email, code } = req.body;
     let indexUser = null;
-    var user = queueUser.find((user, index) => {
-      if (user.email == email && user.code == code) {
-        indexUser = index;
-        return true;
-      }
-      return false;
-    });
+    var user = queueUser
+      .find((user, index) => {
+        if (user.email == email && user.code == code) {
+          indexUser = index;
+          return true;
+        }
+        return false;
+      })
+      .lean();
     if (!user) {
       res.status(404).json({
         ...statusResponse(404, "Fail", "Your email or code is incorrect, please try again."),
@@ -94,10 +96,9 @@ const verifyRegister = asyncHandler(async function (req, res, next) {
 const login = asyncHandler(async function (req, res, next) {
   try {
     const { username, password, email } = req.body;
-    var account = await Users.findOne({ $or: [{ username }, { email }], password });
-    console.log(account);
+    var account = await Users.findOne({ $or: [{ username }, { email }], password }).lean();
     if (account) {
-      const { _id, username, role, email, fullname } = account;
+      const { _id, username, role, email, fullname, cover, description, avatar } = account;
       const accessToken = jwt.sign(
         { _id, username, role, email, fullname },
         process.env.TOKEN_SECRET,
@@ -117,12 +118,20 @@ const login = asyncHandler(async function (req, res, next) {
       if (role == "admin") {
         return res.status(200).json({
           ...statusResponse(200, "OK", "Login successed!!!"),
-          ...{ data: { _id, username, email, fullname, role }, accessToken, refreshToken },
+          ...{
+            data: { _id, username, email, fullname, role, cover, description, avatar },
+            accessToken,
+            refreshToken,
+          },
         });
       } else {
         return res.status(200).json({
           ...statusResponse(200, "OK", "Login successed!!!"),
-          ...{ data: { _id, username, email, fullname }, accessToken, refreshToken },
+          ...{
+            data: { _id, username, email, fullname, cover, description, avatar },
+            accessToken,
+            refreshToken,
+          },
         });
       }
     } else {
