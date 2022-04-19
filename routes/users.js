@@ -19,6 +19,6 @@ router.route("/").get(verifyToken, getProfile);
 router
   .route("/profile")
   .put(verifyToken, upload.single("avatar"), updateProfile)
-  .delete(deleteProfile);
+  .delete(verifyToken, deleteProfile);
 
 module.exports = router;

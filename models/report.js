@@ -10,6 +10,7 @@ const ObjectSchema = new Schema({
   object_id: {
     type: mongoose.Schema.ObjectId,
     required: true,
+    refPath: "type",
   },
 });
 
@@ -19,9 +20,8 @@ const reportSchema = new Schema({
     ref: "Users",
     required: true,
   },
-  reported_user_id: {
-    type: mongoose.Schema.ObjectId,
-    ref: "Users",
+  created_date: {
+    type: Date,
     required: true,
   },
   description: {

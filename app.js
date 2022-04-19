@@ -11,6 +11,7 @@ const authRoutes = require("./routes/auth");
 const comments = require("./routes/comments");
 const categories = require("./routes/categories");
 // const managements = require("./routes/managements");
+const reports = require("./routes/report");
 // const notifications = require("./routes/notifications");
 
 const { notFound, handleNotFound } = require("./utils/handleError");
@@ -37,6 +38,7 @@ app.use(versionApi("users"), users);
 app.use(versionApi("auth"), authRoutes);
 app.use(versionApi("comments"), comments);
 app.use(versionApi("categories"), categories);
+app.use(versionApi("reports"), reports);
 // app.use(versionApi("managements"), managements);
 // app.use(versionApi("notifications"), notifications);
 

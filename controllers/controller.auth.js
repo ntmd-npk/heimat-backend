@@ -5,14 +5,8 @@ const statusResponse = require("../utils/statusResponse");
 const asyncHandler = require("../middlewares/async");
 const createError = require("http-errors");
 const handleAccount = require("../models/handleAccount");
-
-const duration = 1000 * 30;
-
-const deleteAccount = function (email) {
-  setTimeout(async () => {
-    await handleAccount.findOneAndRemove({ email });
-  }, duration);
-};
+const mongoose = require("mongoose");
+const deleteAccount = require("../utils/queueHandleAccount");
 
 const register = asyncHandler(async function (req, res, next) {
   try {
@@ -115,13 +109,9 @@ const login = asyncHandler(async function (req, res, next) {
         }
       );
 
-      const refreshToken = jwt.sign(
-        { _id, username, role, email, fullname },
-        process.env.REFESH_TOKEN_SECRET,
-        {
-          expiresIn: "24h",
-        }
-      );
+      const refreshToken = jwt.sign({ _id }, process.env.REFESH_TOKEN_SECRET, {
+        expiresIn: "168h",
+      });
       console.log(role);
       if (role == "admin") {
         return res.status(200).json({
@@ -169,9 +159,30 @@ function logout(req, res) {
   });
 }
 
+const refeshToken = asyncHandler((req, res, next) => {
+  const { refreshToken } = req.body;
+  const decoded = jwt.verify(refreshToken, process.env.REFESH_TOKEN_SECRET);
+  if (!decoded) {
+    res.status(401).json({ ...statusResponse(401, "Fail", "You need to login again") });
+  } else {
+    const { _id } = decoded;
+    const { username, role, email, fullname } = Users.findOne({
+      _id: mongoose.Types.ObjectId(_id),
+    }).lean();
+    const accessToken = jwt.sign(
+      { _id, username, role, email, fullname },
+      process.env.TOKEN_SECRET,
+      {
+        expiresIn: "2h",
+      }
+    );
+    res.status(200).json({ ...statusResponse(200, "OK", "Successfully") }, accessToken);
+  }
+});
 module.exports = {
   register,
   logout,
   login,
   verifyRegister,
+  refeshToken,
 };

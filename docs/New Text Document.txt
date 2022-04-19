@@ -1,0 +1,37 @@
+===============================
+Yeu cau dang nhap
+
+POST http://localhost:5000/api/v1/reports/user
+
+ {
+     "reported_user_id" :"62431544db385e0ffe2fc6b1",
+     "description": "Do dang ghettttttt",
+     "object_id" : "62431544db385e0ffe2fc6b1"
+ }
+
+===============================
+Yeu cau dang nhap
+
+POST http://localhost:5000/api/v1/reports/comment
+
+ {
+     "description": "Do dang ghettttttt",
+     "created_date": "2022-04-19T15:14:00.881Z",
+     "object_id" : "624a7a35bb044b627b4b40bb"
+ }
+===============================
+Yeu cau dang nhap
+
+POST http://localhost:5000/api/v1/reports/blog
+
+{
+    "description": "Hmmm, sao giờ này em còn chưa ngủ? ",
+    "object_id": "62431b9aea05cc58d81ea8fa",
+    "created_date": "2022-04-19T15:14:00.881Z"
+}
+
+http://localhost:5000/api/v1/reports/list-users
+
+http://localhost:5000/api/v1/reports/list-comments
+
+http://localhost:5000/api/v1/reports/list-blogs

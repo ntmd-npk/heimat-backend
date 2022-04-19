@@ -4,12 +4,17 @@ const Blogs = require("../models/blogs");
 const mongoose = require("mongoose");
 const statusResponse = require("../utils/statusResponse");
 
-// lock and unlock user, create admin,  not yet delete admin
 
-// blogs // list locked blogs, lock and unlock blog
 
-// report // list user, list comment, list blogs
+// LOCK AND UNLOCK USER, CREATE ADMIN,  NOT YET DELETE ADMIN
 
-// comment // list locked comment, lock and unlock blog
+// LIST LOCKED BLOGS, LOCK AND UNLOCK BLOG
+
+// LIST LOCKED COMMENT, LOCK AND UNLOCK BLOG
+
+// REPORT LIST USER, LIST COMMENT, LIST BLOGS
+
+
+
 
 module.exports = {};

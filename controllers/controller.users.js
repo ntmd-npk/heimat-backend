@@ -72,14 +72,79 @@ const updateProfile = asyncHandler(async (req, res, next) => {
 const deleteProfile = asyncHandler(async (req, res, next) => {
   const user_id = req._id;
   try {
+    await Users.following.pull(mongoose.Types.ObjectId(user_id));
+    await Users.followers.pull(mongoose.Types.ObjectId(user_id));
     await Users.findOneAndRemove({ _id: mongoose.Types.ObjectId(user_id) }).lean();
     await Blogs.findOneAndRemove({ user_id: mongoose.Types.ObjectId(user_id) }).lean();
-    await Comments.findOneAndRemove({ user_id: mongoose.Types.ObjectId(user_id) }).lean();
+    await Comments.findOneAndRemove({ from_user_id: mongoose.Types.ObjectId(user_id) }).lean();
     res.status(200).json({ ...statusResponse(200, "OK", "Successed") });
   } catch {
     res.status(404).json({ fail: "Fail" });
   }
 });
+
+const followers = asyncHandler(async (req, res, next) => {
+  const user_id = req._id;
+  const { user } = req.body;
+  try {
+    const UserID = await Users.findOne({ _id: mongoose.Types.ObjectId(user_id) }).lean();
+    await UserID.following.push(mongoose.Types.ObjectId(user));
+    await UserID.save();
+    const User = await Users.findOne({ _id: mongoose.Types.ObjectId(user) }).lean();
+    await User.followers.push(mongoose.Types.ObjectId(user));
+    await User.save();
+    res.status(200).json({ Result: "OK" });
+  } catch {
+    res.status(404).json({ fail: "Fail" });
+  }
+});
+
+const Unfollowers = asyncHandler(async (req, res, next) => {
+  const user_id = req._id;
+  const { user } = req.body;
+  try {
+    const UserID = await Users.findOne({ _id: mongoose.Types.ObjectId(user_id) }).lean();
+    await UserID.following.pull(mongoose.Types.ObjectId(user));
+    await UserID.save();
+    const User = await Users.findOne({ _id: mongoose.Types.ObjectId(user) }).lean();
+    await User.followers.pull(mongoose.Types.ObjectId(user));
+    await User.save();
+    res.status(200).json({ Result: "OK" });
+  } catch {
+    res.status(404).json({ fail: "Fail" });
+  }
+});
+
+// const listUserFollowing = asyncHandler(async (req, res, next) => {
+//   const user_id = req._id;
+//   const { user } = req.body;
+//   try {
+//     const UserID = await Users.findOne({ _id: mongoose.Types.ObjectId(user_id) }).lean();
+//     await UserID.following.pull(mongoose.Types.ObjectId(user));
+//     await UserID.save();
+//     const User = await Users.findOne({ _id: mongoose.Types.ObjectId(user) }).lean();
+//     await User.followers.pull(mongoose.Types.ObjectId(user));
+//     await User.save();
+//     res.status(200).json({ Result: "OK" });
+//   } catch {
+//     res.status(404).json({ fail: "Fail" });
+//   }
+// });
+// const listUserFollowers = asyncHandler(async (req, res, next) => {
+//   const user_id = req._id;
+//   const { user } = req.body;
+//   try {
+//     const UserID = await Users.findOne({ _id: mongoose.Types.ObjectId(user_id) }).lean();
+//     await UserID.following.pull(mongoose.Types.ObjectId(user));
+//     await UserID.save();
+//     const User = await Users.findOne({ _id: mongoose.Types.ObjectId(user) }).lean();
+//     await User.followers.pull(mongoose.Types.ObjectId(user));
+//     await User.save();
+//     res.status(200).json({ Result: "OK" });
+//   } catch {
+//     res.status(404).json({ fail: "Fail" });
+//   }
+// });
 
 module.exports = {
   getProfile,
