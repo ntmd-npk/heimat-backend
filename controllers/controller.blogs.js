@@ -220,10 +220,7 @@ const postBlog = asyncHandler(async function (req, res, next) {
   try {
     const user_id = req._id;
     var Blog = JSON.parse(req.body.blog);
-    console.log(Blog.created_date);
     Blog.created_date = new Date(Blog.created_date);
-    console.log(Blog.created_date.toLocaleDateString("vi"));
-
     const file = req.file;
     if (file) {
       Blog.cover = process.env.URL_FILE + file.filename;
