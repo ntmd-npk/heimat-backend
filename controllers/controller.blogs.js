@@ -6,113 +6,113 @@ const Comments = require("../models/comments");
 
 const getBlogsByCategory = asyncHandler(async (req, res, next) => {
   const { category_id } = req.query;
-
-  const result = await Blogs.aggregate([
-    {
-      $match: {
-        category_id: mongoose.Types.ObjectId(category_id),
-      },
-    },
-    {
-      $lookup: {
-        from: "users",
-        localField: "user_id",
-        foreignField: "_id",
-        as: "user",
-      },
-    },
-    {
-      $lookup: {
-        from: "categories",
-        localField: "category_id",
-        foreignField: "_id",
-        as: "category",
-      },
-    },
-    {
-      $project: {
-        "category.name": 1,
-        user: {
-          avatar: 1,
-          cover: 1,
-          username: 1,
-          fullname: 1,
-          description: 1,
-          followers: 1,
-          following: 1,
-          _id: 1,
+  try {
+    const result = await Blogs.aggregate([
+      {
+        $match: {
+          category_id: mongoose.Types.ObjectId(category_id),
+          status: "public",
         },
-        title: 1,
-        content: 1,
-        created_date: 1,
-        upvote: 1,
-        downvote: 1,
-        cover: 1,
       },
-    },
-  ]).exec();
-  res.status(200).json({ result });
+      {
+        $lookup: {
+          from: "users",
+          localField: "user_id",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "category_id",
+          foreignField: "_id",
+          as: "category",
+        },
+      },
+      {
+        $project: {
+          "category.name": 1,
+          user: {
+            avatar: 1,
+            cover: 1,
+            username: 1,
+            fullname: 1,
+            description: 1,
+            followers: 1,
+            following: 1,
+            _id: 1,
+          },
+          title: 1,
+          content: 1,
+          created_date: 1,
+          upvote: 1,
+          downvote: 1,
+          cover: 1,
+        },
+      },
+    ]).exec();
+    res.status(200).json({ result });
+  } catch {
+    res.status(500).json({ result: "Fail" });
+  }
 });
 
 const getAllBlogs = asyncHandler(async (req, res, next) => {
-  const { user_id } = req.query;
-  const result = await Blogs.aggregate([
-    {
-      $match: {
-        user_id: mongoose.Types.ObjectId(user_id),
-      },
-    },
-    {
-      $lookup: {
-        from: "users",
-        localField: "user_id",
-        foreignField: "_id",
-        as: "user",
-      },
-    },
-    {
-      $lookup: {
-        from: "categories",
-        localField: "category_id",
-        foreignField: "_id",
-        as: "category",
-      },
-    },
-    {
-      $project: {
-        "category.name": 1,
-        user: {
-          avatar: 1,
-          cover: 1,
-          username: 1,
-          fullname: 1,
-          followers: 1,
-          following: 1,
-          description: 1,
-          _id: 1,
+  try {
+    const { user_id } = req.query;
+    const result = await Blogs.aggregate([
+      {
+        $match: {
+          user_id: mongoose.Types.ObjectId(user_id),
+          status: "public",
         },
-        title: 1,
-        content: 1,
-        created_date: 1,
-        upvote: 1,
-        downvote: 1,
-        cover: 1,
       },
-    },
-  ]).exec();
-  res.json({ result });
+      {
+        $lookup: {
+          from: "users",
+          localField: "user_id",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "category_id",
+          foreignField: "_id",
+          as: "category",
+        },
+      },
+      {
+        $project: {
+          "category.name": 1,
+          user: {
+            avatar: 1,
+            cover: 1,
+            username: 1,
+            fullname: 1,
+            followers: 1,
+            following: 1,
+            description: 1,
+            _id: 1,
+          },
+          title: 1,
+          content: 1,
+          created_date: 1,
+          upvote: 1,
+          downvote: 1,
+          cover: 1,
+        },
+      },
+    ]).exec();
+    res.json({ result });
+  } catch {
+    res.status(500).json({ result: "Fail" });
+  }
 });
 
 const getBlog = asyncHandler(async (req, res, next) => {
-  // const { id } = req.params;
-  // const testing = await Blogs.findOne({ _id: mongoose.Types.ObjectId(id) })
-  //   .populate("user_id")
-  //   .populate({
-  //     path: "listComment",
-  //     populate: { path: "listComment" },
-  //   })
-  //   .populate("category_id");
-  // res.json(testing);
   try {
     const { id } = req.params;
     const result = await Blogs.aggregate([
@@ -154,6 +154,7 @@ const getBlog = asyncHandler(async (req, res, next) => {
           },
           title: 1,
           content: 1,
+          status: 1,
           created_date: 1,
           upvote: 1,
           downvote: 1,
@@ -161,11 +162,20 @@ const getBlog = asyncHandler(async (req, res, next) => {
         },
       },
     ]).exec();
-
+    if (result[0].status == "block") {
+      res.status(404).json({
+        ...statusResponse(
+          404,
+          "Fail",
+          "This blog has been locked due to a violation of Heimat's policy and terms and usage."
+        ),
+      });
+    }
     const listComments = await Comments.aggregate([
       {
         $match: {
           from_blog_id: mongoose.Types.ObjectId(id),
+          status: "public",
         },
       },
       {
@@ -193,48 +203,36 @@ const getBlog = asyncHandler(async (req, res, next) => {
           },
           from_blog_id: 1,
           content: 1,
-          create_date: 1,
+          created_date: 1,
           upvote: 1,
           downvote: 1,
           from_user_id: 1,
         },
       },
     ]);
-    console.log("=============================================================");
-    console.log(result);
     res.json({ result, listComments });
-  } catch (e) {
-    res.json({ e });
+  } catch {
+    res.json({ result: "Fail" });
   }
 });
 
 const postBlog = asyncHandler(async function (req, res, next) {
-  const user_id = req._id;
-  var Blog = JSON.parse(req.body.blog);
-  const file = req.file;
-  if (file) {
-    Blog.cover = process.env.URL_FILE + file.filename;
+  try {
+    const user_id = req._id;
+    var Blog = JSON.parse(req.body.blog);
+    Blog.created_date = new Date(Blog.created_date);
+    const file = req.file;
+    if (file) {
+      Blog.cover = process.env.URL_FILE + file.filename;
+    }
+    Blog.user_id = mongoose.Types.ObjectId(user_id);
+    Blog.category_id = mongoose.Types.ObjectId(Blog.category_id);
+    const blog = new Blogs({ ...Blog });
+    const result = await blog.save();
+    res.status(200).json({ ...statusResponse(200, "OK", "Successed"), result: { ...result._doc } });
+  } catch {
+    res.status(500).json({ ...statusResponse(500, "Fail", "Cant save your blogs") });
   }
-  Blog.user_id = mongoose.Types.ObjectId(user_id);
-  Blog.category_id = mongoose.Types.ObjectId(Blog.category_id);
-  const blog = new Blogs({ ...Blog });
-  const result = await blog.save();
-  res.status(200).json({ ...statusResponse(200, "OK", "Successed"), result: { ...result._doc } });
-  // try {
-  //   const user_id = req._id;
-  //   var Blog = JSON.parse(req.body.blog);
-  //   const file = req.file;
-  //   if (file) {
-  //     Blog.cover = process.env.URL_FILE + file.filename;
-  //   }
-  //   Blog.user_id = mongoose.Types.ObjectId(user_id);
-  //   Blog.category_id = mongoose.Types.ObjectId(Blog.category_id);
-  //   const blog = new Blogs({ ...Blog });
-  //   const result = await blog.save();
-  //   res.status(200).json({ ...statusResponse(200, "OK", "Successed"), result: { ...result._doc } });
-  // } catch {
-  //   res.status(500).json({ ...statusResponse(500, "Fail", "Cant save your blogs") });
-  // }
 });
 
 const deleteBlog = asyncHandler(async (req, res, next) => {
@@ -280,7 +278,7 @@ const putBlog = asyncHandler(async (req, res, next) => {
           user_id: mongoose.Types.ObjectId(user_id),
           _id: mongoose.Types.ObjectId(id),
         },
-        { $set: { created_date: Blog.created_date } }
+        { $set: { created_date: new Date(Blog.created_date) } }
       );
     if (Blog?.category_id != undefined)
       await Blogs.updateOne(
@@ -362,28 +360,28 @@ const getAllPostOfAllUsers = asyncHandler(async (req, res, next) => {
   }
 });
 const upvoteBlog = asyncHandler(async (req, res, next) => {
-  const user_id = req._id;
-  const { idBlog } = req.params;
   try {
+    const user_id = req._id;
+    const { idBlog } = req.params;
     await Blogs.updateOne(
       { _id: mongoose.Types.ObjectId(idBlog) },
       { $pull: { downvote: user_id } }
     );
     res.status(200).json({ ...statusResponse(200, "OK", "Successfully") });
-  } catch (e) {
+  } catch {
     res.status(500).json({ ...statusResponse(500, "Fail", "Couldn't upvote blog") });
   }
 });
 const downvoteBlog = asyncHandler(async (req, res, next) => {
-  const user_id = req._id;
-  const { idBlog } = req.body;
   try {
+    const user_id = req._id;
+    const { idBlog } = req.body;
     await Blogs.updateOne(
       { _id: mongoose.Types.ObjectId(idBlog) },
       { $push: { downvote: user_id } }
     );
     res.status(200).json({ ...statusResponse(200, "OK", "Successfully") });
-  } catch (e) {
+  } catch {
     res.status(500).json({ ...statusResponse(500, "Fail", "Couldn't downvote blog") });
   }
 });

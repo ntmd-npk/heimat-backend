@@ -5,12 +5,12 @@ const Comments = require("../models/comments");
 
 const postComment = asyncHandler(async (req, res, next) => {
   const from_user_id = req._id;
-  const { from_blog_id, content, create_date } = req.body;
+  const { from_blog_id, content, created_date } = req.body;
   try {
     const comment = Comments({
       from_blog_id: mongoose.Types.ObjectId(from_blog_id),
       content,
-      create_date,
+      created_date: new Date(created_date),
       from_user_id: mongoose.Types.ObjectId(from_user_id),
     });
     const result = await comment.save();

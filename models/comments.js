@@ -12,12 +12,17 @@ const commentSchema = new Schema({
     ref: "users",
     required: true,
   },
+  status: {
+    type: String,
+    enum: ["public", "block"],
+    default: "public",
+  },
   content: {
     type: String,
     required: true,
   },
-  create_date: {
-    type: String,
+  created_date: {
+    type: Date,
     required: true,
   },
   upvote: {

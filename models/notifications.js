@@ -9,7 +9,7 @@ const notificationSchema = new Schema({
   content: {
     type: String,
   },
-  date: {
+  created_date: {
     type: Date,
   },
   read: {

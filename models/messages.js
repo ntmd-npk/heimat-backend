@@ -14,7 +14,7 @@ const messagesSchema = new Schema({
     type: mongoose.Schema.ObjectId,
     ref: "users",
   },
-  date: {
+  created_date: {
     type: String,
   },
   content: {

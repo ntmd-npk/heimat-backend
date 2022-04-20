@@ -1,45 +1,56 @@
 let Users = require("../models/users");
-let queueUser = require("../models/queueUser");
 const jwt = require("jsonwebtoken");
 const verifyEmail = require("../utils/verifyEmail");
 const statusResponse = require("../utils/statusResponse");
 const asyncHandler = require("../middlewares/async");
 const createError = require("http-errors");
+const handleAccount = require("../models/handleAccount");
+const mongoose = require("mongoose");
+const deleteAccount = require("../utils/queueHandleAccount");
 
 const register = asyncHandler(async function (req, res, next) {
   try {
-    const { username, password, email, fullname } = req.body;
+    const { username, password, email, fullname, created_date } = req.body;
     const account = await Users.findOne({ $or: [{ username }, { email }] }).lean();
     if (account) {
       res.status(404).json({
         ...statusResponse(404, "Fail", "this account existed"),
       });
     } else {
-      verifyEmail(email)
-        .then((result) => {
-          if (result.status) {
-            var user = queueUser.find((user) => user.email === email).lean();
-            if (user) {
-              user.code = result.code;
-            } else {
-              var user = {};
-              user.fullname = fullname;
-              user.username = username;
-              user.password = password;
-              user.email = email;
-              user.code = result.code;
-              queueUser.push(user);
+      var user = await handleAccount.findOne({ $or: [{ username }, { email }] }).lean();
+      if (user) {
+        res.status(200).json({
+          ...statusResponse(
+            200,
+            "OK",
+            "We sent the code to your email earlier. Please check your mail for verification!!!"
+          ),
+        });
+      } else
+        verifyEmail(email)
+          .then(async (result) => {
+            if (result.status) {
+              temp = new handleAccount({
+                fullname,
+                username,
+                password,
+                created_date,
+                email,
+                typeAccount: "register",
+                code: result.code,
+              });
+              await temp.save();
             }
-            res.status(200).json({
+            deleteAccount(email);
+            return res.status(200).json({
               ...statusResponse(200, "OK", "Please check your mail for verification"),
             });
-          }
-        })
-        .catch((err) => {
-          res.status(500).json({
-            ...statusResponse(500, "Fail", "your mail didn't exist and couldn't verify."),
+          })
+          .catch((err) => {
+            res.status(500).json({
+              ...statusResponse(500, "Fail", "your mail didn't exist and couldn't verify."),
+            });
           });
-        });
     }
   } catch (error) {
     if (error.isJoi === true) return next(createError.BadRequest("Invalid Email/Password"));
@@ -50,34 +61,12 @@ const register = asyncHandler(async function (req, res, next) {
 const verifyRegister = asyncHandler(async function (req, res, next) {
   try {
     const { email, code } = req.body;
-    let indexUser = null;
-    var user = queueUser
-      .find((user, index) => {
-        if (user.email == email && user.code == code) {
-          indexUser = index;
-          return true;
-        }
-        return false;
-      })
-      .lean();
-    if (!user) {
-      res.status(404).json({
-        ...statusResponse(404, "Fail", "Your email or code is incorrect, please try again."),
-      });
-    } else {
-      var user = {
-        username: user.username,
-        email: user.email,
-        password: user.password,
-        fullname: user.fullname,
-      };
-      console.log(user);
-      if (indexUser != null) {
-        queueUser.slice(indexUser, 1);
-      }
-      const account = new Users({ ...user });
+    const result = await handleAccount.findOne({ email, code }).lean();
+    if (result) {
+      const { username, password, email, fullname, created_date } = result;
+      const account = new Users({ username, password, email, fullname, created_date });
       await account.save();
-      console.log(account);
+      await handleAccount.findOneAndRemove({ email });
       res.status(200).json({
         ...statusResponse(
           200,
@@ -85,8 +74,12 @@ const verifyRegister = asyncHandler(async function (req, res, next) {
           "Account verification successful, please return to the login page to log in."
         ),
       });
+    } else {
+      res.status(404).json({
+        ...statusResponse(404, "Fail", "Your email or code is incorrect, please try again."),
+      });
     }
-  } catch {
+  } catch (e) {
     res.status(500).json({
       ...statusResponse(500, "Fail", "Cant verification this account"),
     });
@@ -98,7 +91,16 @@ const login = asyncHandler(async function (req, res, next) {
     const { username, password, email } = req.body;
     var account = await Users.findOne({ $or: [{ username }, { email }], password }).lean();
     if (account) {
-      const { _id, username, role, email, fullname, cover, description, avatar } = account;
+      const { _id, username, role, email, fullname, cover, description, avatar, status } = account;
+      if (status == "block") {
+        return res.json({
+          ...statusResponse(
+            403,
+            "Fail",
+            "Your account has been locked for violating Heimat's policy and terms of use!!!"
+          ),
+        });
+      }
       const accessToken = jwt.sign(
         { _id, username, role, email, fullname },
         process.env.TOKEN_SECRET,
@@ -107,13 +109,9 @@ const login = asyncHandler(async function (req, res, next) {
         }
       );
 
-      const refreshToken = jwt.sign(
-        { _id, username, role, email, fullname },
-        process.env.REFESH_TOKEN_SECRET,
-        {
-          expiresIn: "24h",
-        }
-      );
+      const refreshToken = jwt.sign({ _id }, process.env.REFESH_TOKEN_SECRET, {
+        expiresIn: "168h",
+      });
       console.log(role);
       if (role == "admin") {
         return res.status(200).json({
@@ -161,9 +159,30 @@ function logout(req, res) {
   });
 }
 
+const refeshToken = asyncHandler((req, res, next) => {
+  const { refreshToken } = req.body;
+  const decoded = jwt.verify(refreshToken, process.env.REFESH_TOKEN_SECRET);
+  if (!decoded) {
+    res.status(401).json({ ...statusResponse(401, "Fail", "You need to login again") });
+  } else {
+    const { _id } = decoded;
+    const { username, role, email, fullname } = Users.findOne({
+      _id: mongoose.Types.ObjectId(_id),
+    }).lean();
+    const accessToken = jwt.sign(
+      { _id, username, role, email, fullname },
+      process.env.TOKEN_SECRET,
+      {
+        expiresIn: "2h",
+      }
+    );
+    res.status(200).json({ ...statusResponse(200, "OK", "Successfully") }, accessToken);
+  }
+});
 module.exports = {
   register,
   logout,
   login,
   verifyRegister,
+  refeshToken,
 };

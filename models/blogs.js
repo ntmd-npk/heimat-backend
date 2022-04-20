@@ -15,7 +15,8 @@ const blogSchema = new Schema({
     required: true,
   },
   created_date: {
-    type: String,
+    type: Date,
+    required: true,
   },
   upvote: {
     type: [
@@ -37,7 +38,7 @@ const blogSchema = new Schema({
   },
   status: {
     type: String,
-    enum: ["public", "private", "block"],
+    enum: ["public", "block"],
     default: "public",
   },
   category_id: {

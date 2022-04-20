@@ -45,9 +45,13 @@ const UserSchema = new Schema({
     enum: ["Male", "Female", "none"],
     default: "none",
   },
+  created_date: {
+    type: Date,
+    required: true,
+  },
   status: {
     type: String,
-    enum: ["Online", "Offline", "none"],
+    enum: ["block", "none"],
     default: "none",
   },
   fullname: {
@@ -60,7 +64,7 @@ const UserSchema = new Schema({
     default: null,
   },
   birthday: {
-    type: String,
+    type: Date,
     default: null,
   },
   followers: {
