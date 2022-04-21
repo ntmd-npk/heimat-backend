@@ -63,8 +63,7 @@ const updateProfile = asyncHandler(async (req, res, next) => {
         { $set: { avatar: process.env.URL_FILE + file.filename } }
       );
     res.status(200).json({ ...statusResponse(200, "OK", "Successed") });
-  } catch  {
-   
+  } catch {
     res.status(500).json({ ...statusResponse(500, "Fail", "Errored") });
   }
 });
@@ -84,16 +83,16 @@ const deleteProfile = asyncHandler(async (req, res, next) => {
 });
 
 const followers = asyncHandler(async (req, res, next) => {
-  const user_id = req._id;
-  const { user } = req.body;
+  const user = req._id;
+  const { user_id } = req.body;
   try {
-    let USERID = await Users.findById(mongoose.Types.ObjectId(user_id)).lean();
-    if (USERID.following.includes(mongoose.Types.ObjectId(user))) {
+    let USERID = await Users.findById(mongoose.Types.ObjectId(user)).lean();
+    if (USERID.following.includes(mongoose.Types.ObjectId(user_id))) {
       res.json({ result: "existed" });
     } else {
-      USERID.following.push(mongoose.Types.ObjectId(user));
-      let userFollowed = await Users.findById(mongoose.Types.ObjectId(user)).lean();
-      userFollowed.followers.push(mongoose.Types.ObjectId(user_id));
+      USERID.following.push(mongoose.Types.ObjectId(user_id));
+      let userFollowed = await Users.findById(mongoose.Types.ObjectId(user_id)).lean();
+      userFollowed.followers.push(mongoose.Types.ObjectId(user));
       await USERID.save();
       await userFollowed.save();
     }
@@ -104,14 +103,14 @@ const followers = asyncHandler(async (req, res, next) => {
 });
 
 const unfollowers = asyncHandler(async (req, res, next) => {
-  const user_id = req._id;
-  const { user } = req.body;
+  const user = req._id;
+  const { user_id } = req.body;
   try {
-    let USERID = await Users.findById(mongoose.Types.ObjectId(user_id)).lean();
-    if (USERID.following.includes(mongoose.Types.ObjectId(user))) {
-      USERID.following.pull(mongoose.Types.ObjectId(user));
-      let userFollowed = await Users.findById(mongoose.Types.ObjectId(user)).lean();
-      userFollowed.followers.pull(mongoose.Types.ObjectId(user_id));
+    let USERID = await Users.findById(mongoose.Types.ObjectId(user)).lean();
+    if (USERID.following.includes(mongoose.Types.ObjectId(user_id))) {
+      USERID.following.pull(mongoose.Types.ObjectId(user_id));
+      let userFollowed = await Users.findById(mongoose.Types.ObjectId(user_id)).lean();
+      userFollowed.followers.pull(mongoose.Types.ObjectId(user));
       await USERID.save();
       await userFollowed.save();
     } else {
