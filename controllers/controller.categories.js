@@ -73,7 +73,10 @@ const deleteCategory = asyncHandler(async (req, res, next) => {
   try {
     const { category_id } = req.body;
     await categories.findOneAndRemove({ _id: mongoose.Types.ObjectId(category_id) });
-    await Blogs.deleteMany({ category_id: mongoose.Types.ObjectId(category_id) });
+    await Blogs.updateMany(
+      { category_id: mongoose.Types.ObjectId(category_id) },
+      { category_id: mongoose.Types.ObjectId("62617463a24d2c530ba9800f") }
+    );
     res.status(200).json({ ...statusResponse(200, "OK", "This category deleted") });
   } catch {
     res.status(500).json({ ...statusResponse(500, "Fail", "Couldn't delete this category") });
@@ -125,5 +128,3 @@ module.exports = {
   deleteCategory,
   rateCategory,
 };
-
-
