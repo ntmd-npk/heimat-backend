@@ -56,7 +56,7 @@ const listLockedUser = asyncHandler(async (req, res, next) => {
 
 const getListBlogsFromDateTime = asyncHandler(async (req, res, next) => {
   const { from, to } = req.body;
-  console.log({ from: new Date(from), to: new Date(to) });
+
   const blogs = await Blogs.find({
     created_date: {
       $gte: new Date(from),
@@ -86,16 +86,6 @@ const getAllAdmins = asyncHandler(async (req, res, next) => {
   }
 });
 
-const reportOtherUser = asyncHandler(async (req, res, next) => {
-  const user_id = req._id;
-  const { other_user_id, content } = req.body;
-  try {
-    const user = await Users.findOne({ _id: mongoose.Types.ObjectId(user_id) }).lean();
-    res.status(200).json({ user });
-  } catch {
-    res.status(404).json({ fail: "Fail" });
-  }
-});
 
 const getOtherUser = asyncHandler(async (req, res, next) => {
   const { user_id } = req.body;

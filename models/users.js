@@ -25,11 +25,6 @@ const UserSchema = new Schema({
     unique: [true, "User already exits"],
     match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, "Please add a valid email"],
   },
-  block: {
-    type: Boolean,
-    select: false,
-    default: false,
-  },
   avatar: {
     type: String,
     default:
@@ -51,8 +46,8 @@ const UserSchema = new Schema({
   },
   status: {
     type: String,
-    enum: ["block", "none"],
-    default: "none",
+    enum: ["public", "block"],
+    default: "public",
   },
   fullname: {
     type: String,

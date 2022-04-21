@@ -112,7 +112,6 @@ const login = asyncHandler(async function (req, res, next) {
       const refreshToken = jwt.sign({ _id }, process.env.REFESH_TOKEN_SECRET, {
         expiresIn: "168h",
       });
-      console.log(role);
       if (role == "admin") {
         return res.status(200).json({
           ...statusResponse(200, "OK", "Login successed!!!"),

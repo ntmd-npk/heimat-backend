@@ -10,7 +10,7 @@ const users = require("./routes/users");
 const authRoutes = require("./routes/auth");
 const comments = require("./routes/comments");
 const categories = require("./routes/categories");
-// const managements = require("./routes/managements");
+const managements = require("./routes/managements");
 const reports = require("./routes/report");
 // const notifications = require("./routes/notifications");
 
@@ -19,9 +19,7 @@ DBconnection();
 const app = express();
 const cors = require("cors");
 const origin = "*";
-console.log(origin); // giao thức, 1 HTTP or HTTPS , 2 DOMAIN 3 PORT
 const corsOptions = { origin };
-//var server = require("http").Server(app);
 var io = require("socket.io")(4000);
 app.use("/public/images", express.static(path.join(__dirname, "/public/images")));
 app.use("/public/video", express.static(path.join(__dirname, "/public/video")));
@@ -39,33 +37,11 @@ app.use(versionApi("auth"), authRoutes);
 app.use(versionApi("comments"), comments);
 app.use(versionApi("categories"), categories);
 app.use(versionApi("reports"), reports);
-// app.use(versionApi("managements"), managements);
+app.use(versionApi("managements"), managements);
 // app.use(versionApi("notifications"), notifications);
-
-//=================================================================
-// const Comments = require("./models/comments");
-// const asyncHandler = require("./middlewares/async");
-// const mongoose = require("mongoose");
-// app.post(
-//   "/add",
-//   asyncHandler(async (req, res, next) => {
-//     const result = await Comments.updateMany({}, { created_date: new Date() });
-//     res.json({ result });
-//   })
-// );
-//=================================================================
 
 app.use(notFound);
 app.use(handleNotFound);
-
-// io.on("connection", (socket) => {
-//   console.log("connect by socket.io");
-//   socket.emit("start", { name: "nhat" });
-
-//   socket.on("", (data) => {
-//     console.log(data);
-//   });
-// });
 
 app.listen(config.PORT, function (err) {
   if (!err) {
