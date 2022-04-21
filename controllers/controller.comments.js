@@ -16,8 +16,7 @@ const postComment = asyncHandler(async (req, res, next) => {
     const result = await comment.save();
 
     res.status(200).json({ ...statusResponse("200", "OK", "Successfully"), result });
-  } catch (e) {
-    console.log(e);
+  } catch {
     res
       .status(500)
       .json({ ...statusResponse("500", "Fail", "Couldn't get list comments for this blog") });
@@ -103,8 +102,7 @@ const checkDownvote = asyncHandler(async (req, res, next) => {
 
 const upvoteComment = asyncHandler(async (req, res, next) => {
   const user_id = req._id;
-  console.log("xxxxxxxxxxxxxxxxxxxx");
-  console.log(user_id);
+  
   const comment = req.comment;
   await comment.upvote.push(mongoose.Types.ObjectId(user_id));
   await comment.save();

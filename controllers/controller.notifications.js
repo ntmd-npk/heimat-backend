@@ -10,8 +10,8 @@ const getNotification = asyncHandler(async (req, res, next) => {
       _id: mongoose.Types.ObjectId(notification_id),
     }).lean();
     res.status(200).json({ ...statusResponse("200", "OK", "Successfully"), result });
-  } catch (e) {
-    console.log(e);
+  } catch {
+   
     res
       .status(500)
       .json({ ...statusResponse("500", "Fail", "Couldn't get your list notifications") });
@@ -28,8 +28,8 @@ const readNotification = asyncHandler(async (req, res, next) => {
       { read: true }
     );
     res.status(200).json({ ...statusResponse("200", "OK", "Successfully"), result });
-  } catch (e) {
-    console.log(e);
+  } catch  {
+   
     res
       .status(500)
       .json({ ...statusResponse("500", "Fail", "Couldn't handle to read notifications") });
@@ -43,8 +43,8 @@ const getAllNotification = asyncHandler(async (req, res, next) => {
       user_id: mongoose.Types.ObjectId(user_id),
     });
     res.status(200).json({ ...statusResponse("200", "OK", "Successfully"), result });
-  } catch (e) {
-    console.log(e);
+  } catch  {
+   
     res
       .status(500)
       .json({ ...statusResponse("500", "Fail", "Couldn't handle to read notifications") });
@@ -66,8 +66,8 @@ const deleteNotification = asyncHandler(async (req, res, next) => {
       { read: true }
     );
     res.status(200).json({ ...statusResponse("200", "OK", "Successfully"), result });
-  } catch (e) {
-    console.log(e);
+  } catch  {
+
     res
       .status(500)
       .json({ ...statusResponse("500", "Fail", "Couldn't handle to delete notifications") });
