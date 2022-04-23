@@ -1,0 +1,14 @@
+regex check email:
+"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[[a-zA-Z]+"
+
+
+
+  // const { id } = req.params;
+  // const testing = await Blogs.findOne({ _id: mongoose.Types.ObjectId(id) })
+  //   .populate("user_id")
+  //   .populate({
+  //     path: "listComment",
+  //     populate: { path: "listComment" },
+  //   })
+  //   .populate("category_id");
+  // res.json(testing);

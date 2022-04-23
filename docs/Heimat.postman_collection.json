@@ -1,0 +1,628 @@
+{
+	"info": {
+		"_postman_id": "e7382905-7914-4f75-9da6-22bfb0890732",
+		"name": "Heimat",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Notifications",
+			"item": [
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "chưa có mô, từ từ đừng nóng",
+							"host": [
+								"chưa có mô, từ từ đừng nóng"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Categories",
+			"item": [
+				{
+					"name": "post category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MjNiZjU2ZTJkMmVkNzIxOWNlY2MwNDEiLCJ1c2VybmFtZSI6Im5oYXQiLCJyb2xlIjoiYWRtaW4iLCJlbWFpbCI6Im5oYXRAZ21haWwuY29tIiwiZnVsbG5hbWUiOiJOZ3V54buFbiDEkMOsbmggTmjhuq10IiwiaWF0IjoxNjQ4NDc2MTk3LCJleHAiOjE2NDg0ODMzOTd9.Nj2c_xJG9mh82ZHyHDvpJLyUFSFlLyJYwjV2YTSktz8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"new category\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/categories/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"categories",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/categories/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"categories",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MjNiZjU2ZTJkMmVkNzIxOWNlY2MwNDEiLCJ1c2VybmFtZSI6Im5oYXQiLCJyb2xlIjoiYWRtaW4iLCJlbWFpbCI6Im5oYXRAZ21haWwuY29tIiwiZnVsbG5hbWUiOiJOZ3V54buFbiDEkMOsbmggTmjhuq10IiwiaWF0IjoxNjQ4NDc2MTk3LCJleHAiOjE2NDg0ODMzOTd9.Nj2c_xJG9mh82ZHyHDvpJLyUFSFlLyJYwjV2YTSktz8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"category_id\": \"6241c0d5aa9639fc57a1a70c\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/categories/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"categories",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update category",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"category_id\": \"6241c0d5aa9639fc57a1a70c\",\r\n    \"name\": \"edit category name\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/categories/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"categories",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "get user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MjQzMTQ1ZmRiMzg1ZTBmZmUyZmM2YWYiLCJ1c2VybmFtZSI6Im5oYXQiLCJyb2xlIjoidXNlciIsImVtYWlsIjoibmhhdGRuLml0QGdtYWlsLmNvbSIsImZ1bGxuYW1lIjoiTmd1eeG7hW4gxJDDrG5oIE5o4bqtdCIsImlhdCI6MTY0ODYzNDkxNywiZXhwIjoxNjQ4NjQyMTE3fQ.Yi1z28SPNsJDFc2AMYwtX012hxaGMrJrbvOBez8QjYc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/users/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "verification",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImR1eWVuMDEiLCJpYXQiOjE2NDU4NTkxNTAsImV4cCI6MTY0NTg2MDk1MH0.Gt9MBYx6CEmyUhpr1veeJJqXyiHI2chYEGqmEs2tL0w",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"nhatdn.it@gmail.com\",\r\n    \"code\": \"305257\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/v1/auth/verification/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"verification",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\" : \"nhat\",\r\n    \"password\": \"nhat2572001\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/v1/auth/login/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"login",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "register",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImR1eWVuMTMiLCJpYXQiOjE2NDM1NTU5MzYsImV4cCI6MTY0MzU1NTk2Nn0.z1_VHc6XTJdz5SM3zbSL8Paw6-_fuTO51yAQj85YZ0E",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"duyen01\",\r\n    \"email\": \"nhatdn.it@gmail.com\",\r\n    \"password\": \"duyen01\",\r\n    \"fullname\": \"Nguyễn Thị Mỹ Duyên\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/v1/auth/register/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"register",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "logout",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImR1eWVuMDEiLCJpYXQiOjE2NDczMjg3OTcsImV4cCI6MTY0NzMzMjM5N30.DxfsKRwH0-qo4g2asBQcLuIFWIUCfzYh1Ocd65JJNIk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/v1/auth/logout/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"logout",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create blog",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MjNiZjU2ZTJkMmVkNzIxOWNlY2MwNDEiLCJ1c2VybmFtZSI6Im5oYXQiLCJyb2xlIjoidXNlciIsImVtYWlsIjoibmhhdEBnbWFpbC5jb20iLCJmdWxsbmFtZSI6Ik5ndXnhu4VuIMSQw6xuaCBOaOG6rXQiLCJpYXQiOjE2NDgzMTY2MzIsImV4cCI6MTY0ODMyMzgzMn0.egtu9_xG_YNdNWZfnWBlbkU-p1MSy3_dhU4Lmw0yG3I",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"blog\": {\r\n        \"title\": \"Whoa, Is This the Best Marriage Advice?\",\r\n        \"content\": \"<p>It was four months after my daughter was born when…</p><h2>Title</h2><p>I started to feel like I was losing myself. When I looked in the mirror, I no longer saw a bubbly, chatty woman, who lived to wear cute outfits and had enough energy to bake a new recipe after a full workday and three-hour commute.</p><p><br></p><ol><li class=\\\"ql-indent-3\\\">One</li><li class=\\\"ql-indent-3\\\">Two</li><li class=\\\"ql-indent-3\\\">Three</li></ol><p><br></p><ul><li class=\\\"ql-indent-1 ql-align-justify\\\">Instead, I saw frizzy hair peeking out of a baseball cap, a T-shirt soaked with milk, and a person who barely had enough stamina to make it through the day with her baby, let alone do anything else. Dishes piled up in the sink. Laundry was scattered all over the bedroom floor. And the thought of spending 30 minutes doing my hair and makeup or putting together an outfit no longer sounded fun. It just sounded wasteful.&nbsp;<em>Why use that precious time to make myself look presentable when I could catch up on sleep?</em></li></ul>\",\r\n        \"created_date\": \"1/1/2022\",\r\n        \"upvote\": 25,\r\n        \"downvote\": 7,\r\n        \"listComment\": [\r\n            {\r\n                \"_id\": 1,\r\n                \"from_user_id\": 1,\r\n                \"content\": \"This is my comment\",\r\n                \"created_date\": \"1/1/20022\",\r\n                \"upvote\": 1,\r\n                \"downvote\": 0\r\n            }\r\n        ],\r\n        \"category_id\": \"623f4fdeb77709ef9359d709\",\r\n        \"description\": \"The other day, I was getting grumpy...\",\r\n        \"cover\": \"https://www.toponseek.com/blogs/wp-content/uploads/2019/06/toi-uu-hinh-anh-optimize-image-4-1200x700.jpg\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/v1/blogs",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"blogs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all blogs",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/v1/blogs?user_id=6243145fdb385e0ffe2fc6af",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"blogs"
+					],
+					"query": [
+						{
+							"key": "user_id",
+							"value": "6243145fdb385e0ffe2fc6af"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update blog",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MjNiZjU2ZTJkMmVkNzIxOWNlY2MwNDEiLCJ1c2VybmFtZSI6Im5oYXQiLCJyb2xlIjoidXNlciIsImVtYWlsIjoibmhhdEBnbWFpbC5jb20iLCJmdWxsbmFtZSI6Ik5ndXnhu4VuIMSQw6xuaCBOaOG6rXQiLCJpYXQiOjE2NDgyODcwNzIsImV4cCI6MTY0ODI5NDI3Mn0.EwXzlsgMFLgFqSs9Elt7BHLSDdWJgVijgsRVbiHE1Ko",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"blog\": {\r\n        \"title\": \"noi bất tử để không phải sợ covid nha ae :)))\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/v1/blogs/623ede11b7575a7dd854e16e",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"blogs",
+						"623ede11b7575a7dd854e16e"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete blog",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImR1eWVuIiwiaWF0IjoxNjQ3MzMxMjc2LCJleHAiOjE2NDczMzQ4NzZ9.ZQEJ-dhcPHOeMUDYcgrZpjijl4LWQTvvMFQNuhI2yF8",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": " {\r\n  \"user_id\" : 1 \r\n }\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/v1/blogs/623ede11b7575a7dd854e16e",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"blogs",
+						"623ede11b7575a7dd854e16e"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get blog",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/v1/blogs/62431a133d04c3fd480e34c4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"blogs",
+						"62431a133d04c3fd480e34c4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all blog of all users",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/v1/blogs/all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"blogs",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get blogs by category",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/v1/blogs/by-category?category_id=623f4fe7b77709ef9359d70b",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"blogs",
+						"by-category"
+					],
+					"query": [
+						{
+							"key": "category_id",
+							"value": "623f4fe7b77709ef9359d70b"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
