@@ -35,7 +35,7 @@ const handleAccountSchema = new Schema({
   },
   typeAccount: {
     type: String,
-    enum: ["register", "delete"],
+    enum: ["register", "delete", "forgot"],
     default: "register",
   },
 });
