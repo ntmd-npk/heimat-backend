@@ -47,7 +47,9 @@ const addCategory = asyncHandler(async (req, res, next) => {
 const updateCategroy = asyncHandler(async (req, res, next) => {
   try {
     let { category_id, name, description, created_date } = JSON.parse(req.body.category);
-    created_date = new Date(created_date);
+    if (created_date) {
+      created_date = new Date(created_date);
+    }
     const file = req.file;
     let _id = mongoose.Types.ObjectId(category_id);
     let result;
@@ -59,7 +61,7 @@ const updateCategroy = asyncHandler(async (req, res, next) => {
       result = await categories.updateOne({ _id }, { $set: { name } }).lean();
     }
     if (description) {
-      result = await categories.updateOne({ _id }, { $set: { name } }).lean();
+      result = await categories.updateOne({ _id }, { $set: { description } }).lean();
     }
     if (created_date) {
       result = await categories.updateOne({ _id }, { $set: { created_date } }).lean();
