@@ -13,7 +13,7 @@ const getCategories = asyncHandler(async (req, res, next) => {
   }
 });
 const addCategory = asyncHandler(async (req, res, next) => {
-  const { name, description, created_date } = JSON.parse(req.body.category);
+  let { name, description, created_date } = JSON.parse(req.body.category);
   created_date = new Date(created_date);
   const file = req.file;
   let cover;
