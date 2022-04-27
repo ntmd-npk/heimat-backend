@@ -12,6 +12,8 @@ const {
   getBlogsByCategory,
   upvoteBlog,
   downvoteBlog,
+  blogForRecommend,
+  blogsByMonth,
 } = require("../controllers/controller.blogs");
 
 var storage = multer.diskStorage({
@@ -35,4 +37,6 @@ router
   .delete(verifyToken, deleteBlog)
   .put(verifyToken, upload.single("cover"), putBlog);
 
+router.post("/pagination", blogForRecommend);
+router.post("/month", blogsByMonth);
 module.exports = router;

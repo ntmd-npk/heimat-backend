@@ -23,6 +23,7 @@ function verifyEmail(email) {
       };
       transporter.sendMail(mailOption, function (err) {
         if (err) {
+          console.log(err);
           reject({
             status: false,
             code,

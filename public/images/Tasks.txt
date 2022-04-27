@@ -1,0 +1,20 @@
+đổ API trang Admin (all users, blogs, comments, reports, dashboard),
+sửa lại giao diện category thêm description và ảnh cover,
+comment feature chat
+
+fetch notification of admin,
+sửa lại dateTime trên header,
+api search, featured members
+pagination => session "for you"
+
+
+nếu đăng kí xong thì được đăng nhập luôn không cần qua login
+
+img => xem lại alt
+database sửa lại các image
+
+sửa lại cái flow của comment
+
+login use gg 
+
+fix form register

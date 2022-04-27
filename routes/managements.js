@@ -11,6 +11,8 @@ const {
   lockComment,
   listLockedComments,
   unlockComment,
+  searchBlogsAndUsers,
+  statistical,
 } = require("../controllers/controller.managements");
 
 const { verifyToken, isAdmin } = require("../middlewares/auth");
@@ -28,4 +30,6 @@ router.post("/unlock-blog", verifyToken, isAdmin, unlockBlog);
 router.post("/lock-comment", verifyToken, isAdmin, lockComment);
 router.post("/list-locked-comments", verifyToken, isAdmin, listLockedComments);
 router.post("/unlock-comment", verifyToken, isAdmin, unlockComment);
+router.post("/search", searchBlogsAndUsers);
+router.post("/statistical", statistical);
 module.exports = router;

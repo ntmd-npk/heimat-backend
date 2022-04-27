@@ -385,6 +385,120 @@ const downvoteBlog = asyncHandler(async (req, res, next) => {
     res.status(500).json({ ...statusResponse(500, "Fail", "Couldn't downvote blog") });
   }
 });
+
+const blogForRecommend = asyncHandler(async (req, res, next) => {
+  const { pagination } = req.body;
+  const result = await Blogs.countDocuments();
+  const LIMIT = 3;
+  let blogs = {};
+  blogs = await Blogs.aggregate([
+    {
+      $skip: pagination * LIMIT - LIMIT,
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "user_id",
+        foreignField: "_id",
+        as: "user",
+      },
+    },
+    {
+      $lookup: {
+        from: "categories",
+        localField: "category_id",
+        foreignField: "_id",
+        as: "category",
+      },
+    },
+    {
+      $project: {
+        "category.name": 1,
+        user: {
+          avatar: 1,
+          cover: 1,
+          username: 1,
+          fullname: 1,
+          description: 1,
+          _id: 1,
+        },
+        title: 1,
+        content: 1,
+        created_date: 1,
+        upvote: 1,
+        downvote: 1,
+        cover: 1,
+      },
+    },
+    {
+      $sort: {
+        created_date: 1,
+      },
+    },
+    { $limit: LIMIT },
+  ]);
+  let temp = {
+    totalPagination: Math.round(result / LIMIT),
+    totalBlogs: result,
+    pagination: pagination,
+  };
+  res.json({ blogs, pagination: temp });
+});
+
+const blogsByMonth = asyncHandler(async (req, res, next) => {
+  const { start, end } = req.body;
+  const result = await Blogs.aggregate([
+    {
+      $match: {
+        created_date: {
+          $gte: new Date(start),
+          $lt: new Date(end),
+        },
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "user_id",
+        foreignField: "_id",
+        as: "user",
+      },
+    },
+    {
+      $lookup: {
+        from: "categories",
+        localField: "category_id",
+        foreignField: "_id",
+        as: "category",
+      },
+    },
+    {
+      $project: {
+        "category.name": 1,
+        user: {
+          avatar: 1,
+          cover: 1,
+          username: 1,
+          fullname: 1,
+          description: 1,
+          _id: 1,
+        },
+        title: 1,
+        content: 1,
+        created_date: 1,
+        upvote: 1,
+        downvote: 1,
+        cover: 1,
+      },
+    },
+    {
+      $sort: {
+        created_date: 1,
+      },
+    },
+  ]);
+  res.json({ result });
+});
 module.exports = {
   getBlog,
   putBlog,
@@ -395,4 +509,6 @@ module.exports = {
   getAllPostOfAllUsers,
   upvoteBlog,
   downvoteBlog,
+  blogForRecommend,
+  blogsByMonth,
 };

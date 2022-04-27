@@ -46,11 +46,11 @@ const deleteComment = asyncHandler(async (req, res, next) => {
       from_user_id: mongoose.Types.ObjectId(id),
       _id: mongoose.Types.ObjectId(comment_id),
     }).lean();
-    res.status(200).json({ ...statusResponse("200", "OK", "Successfully") });
+    res.status(200).json({ ...statusResponse(200, "OK", "Successfully") });
   } catch {
     res
       .status(500)
-      .json({ ...statusResponse("500", "Fail", "Couldn't delete comment for this blog") });
+      .json({ ...statusResponse(200, "Fail", "Couldn't delete comment for this blog") });
   }
 });
 const getComment = asyncHandler(async (req, res, next) => {
@@ -102,7 +102,7 @@ const checkDownvote = asyncHandler(async (req, res, next) => {
 
 const upvoteComment = asyncHandler(async (req, res, next) => {
   const user_id = req._id;
-  
+
   const comment = req.comment;
   await comment.upvote.push(mongoose.Types.ObjectId(user_id));
   await comment.save();
@@ -133,6 +133,46 @@ const getUserDownvote = asyncHandler(async (req, res, next) => {
   );
   res.status(200).json({ ...statusResponse("200", "OK", "Successfully"), result: comment });
 });
+
+const getAllComment = asyncHandler(async (req, res, next) => {
+  const result = await Comments.aggregate([
+    {
+      $lookup: {
+        from: "users",
+        localField: "from_user_id",
+        foreignField: "_id",
+        as: "user",
+      },
+    },
+    {
+      $lookup: {
+        from: "blogs",
+        localField: "from_blog_id",
+        foreignField: "_id",
+        as: "blog",
+      },
+    },
+    {
+      $project: {
+        blog: {
+          _id: 1,
+          title: 1,
+        },
+        "category.name": 1,
+        user: {
+          username: 1,
+          fullname: 1,
+          _id: 1,
+        },
+        title: 1,
+        content: 1,
+        created_date: 1,
+      },
+    },
+  ]);
+  res.json({ result });
+});
+
 module.exports = {
   postComment,
   updateComment,
@@ -144,4 +184,5 @@ module.exports = {
   downvoteComment,
   getUserDownvote,
   getUserUpvote,
+  getAllComment,
 };

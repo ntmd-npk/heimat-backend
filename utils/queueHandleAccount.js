@@ -1,4 +1,4 @@
-const duration = 1000 * 30;
+const duration = 1000 * 60 * 5;
 const handleAccount = require("../models/handleAccount");
 const deleteAccount = function (email) {
   setTimeout(async () => {

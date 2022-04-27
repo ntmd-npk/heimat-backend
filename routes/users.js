@@ -7,8 +7,11 @@ const {
   unfollowers,
   listUserFollowing,
   listUserFollowers,
+  getAllUsers,
+  getAllAdmins,
+  outstandingMembers,
 } = require("../controllers/controller.users.js");
-const { verifyToken } = require("../middlewares/auth");
+const { verifyToken, isAdmin } = require("../middlewares/auth");
 const router = express.Router();
 
 var storage = multer.diskStorage({
@@ -29,4 +32,8 @@ router.post("/follow", verifyToken, followers);
 router.post("/unfollow", verifyToken, unfollowers);
 router.post("/list-followings", verifyToken, listUserFollowing);
 router.post("/list-followers", verifyToken, listUserFollowers);
+router.get("/all-admins", verifyToken, isAdmin, getAllAdmins);
+router.get("/all-users", verifyToken, isAdmin, getAllUsers);
+router.get("/outstanding", outstandingMembers);
+
 module.exports = router;
