@@ -13,7 +13,7 @@ const register = asyncHandler(async function (req, res, next) {
     const { username, password, email, fullname, created_date } = req.body;
     const account = await Users.findOne({ $or: [{ username }, { email }] }).lean();
     if (account) {
-      res.status(404).json({
+      res.status(200).json({
         ...statusResponse(404, "Fail", "this account existed"),
       });
     } else {
@@ -48,7 +48,7 @@ const register = asyncHandler(async function (req, res, next) {
           })
           .catch((err) => {
             console.log(err);
-            res.status(500).json({
+            res.status(200).json({
               ...statusResponse(
                 500,
                 "Fail",
@@ -75,12 +75,12 @@ const verifyRegister = asyncHandler(async function (req, res, next) {
       await handleAccount.findOneAndRemove({ email });
       next();
     } else {
-      res.status(404).json({
+      res.status(200).json({
         ...statusResponse(404, "Fail", "Your email or code is incorrect, please try again."),
       });
     }
   } catch (e) {
-    res.status(500).json({
+    res.status(200).json({
       ...statusResponse(500, "Fail", "Cant verification this account"),
     });
   }
@@ -122,12 +122,12 @@ const forgotPassword = asyncHandler(async function (req, res, next) {
           });
         });
     } else {
-      res.status(404).json({
+      res.status(200).json({
         ...statusResponse(404, "Fail", "Your email is incorrect, please try again."),
       });
     }
   } catch (e) {
-    res.status(500).json({
+    res.status(200).json({
       ...statusResponse(500, "Fail", "Cant verification this account"),
     });
   }
@@ -179,7 +179,7 @@ const login = asyncHandler(async function (req, res, next) {
         });
       }
     } else {
-      res.status(401).json({
+      res.status(200).json({
         ...statusResponse(
           401,
           "Fail",
@@ -188,7 +188,7 @@ const login = asyncHandler(async function (req, res, next) {
       });
     }
   } catch {
-    res.status(500).json({
+    res.status(200).json({
       ...statusResponse(500, "Fail", "Cant verification this account"),
     });
   }
@@ -209,7 +209,7 @@ const refeshToken = asyncHandler(async (req, res, next) => {
   const { refreshToken } = req.body;
   const decoded = jwt.verify(refreshToken, process.env.REFESH_TOKEN_SECRET);
   if (!decoded) {
-    res.status(401).json({ ...statusResponse(401, "Fail", "You need to login again") });
+    res.status(200).json({ ...statusResponse(401, "Fail", "You need to login again") });
   } else {
     const { _id } = decoded;
     console.log(decoded);

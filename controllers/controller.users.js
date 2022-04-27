@@ -12,7 +12,7 @@ const getProfile = asyncHandler(async (req, res, next) => {
     const user = await Users.findOne({ _id: mongoose.Types.ObjectId(id) }).lean();
     res.status(200).json({ user });
   } catch {
-    res.status(404).json({ fail: "Fail" });
+    res.status(200).json({ fail: "Fail" });
   }
 });
 
@@ -64,7 +64,7 @@ const updateProfile = asyncHandler(async (req, res, next) => {
       );
     res.status(200).json({ ...statusResponse(200, "OK", "Successed") });
   } catch {
-    res.status(500).json({ ...statusResponse(500, "Fail", "Errored") });
+    res.status(200).json({ ...statusResponse(500, "Fail", "Errored") });
   }
 });
 
@@ -78,7 +78,7 @@ const deleteProfile = asyncHandler(async (req, res, next) => {
     await Comments.findOneAndRemove({ from_user_id: mongoose.Types.ObjectId(user_id) }).lean();
     res.status(200).json({ ...statusResponse(200, "OK", "Successed") });
   } catch {
-    res.status(404).json({ fail: "Fail" });
+    res.status(200).json({ fail: "Fail" });
   }
 });
 
@@ -98,7 +98,7 @@ const followers = asyncHandler(async (req, res, next) => {
     }
     res.status(200).json({ result: "OK" });
   } catch {
-    res.status(404).json({ fail: "Fail" });
+    res.status(200).json({ fail: "Fail" });
   }
 });
 
@@ -118,7 +118,7 @@ const unfollowers = asyncHandler(async (req, res, next) => {
     }
     res.status(200).json({ result: "OK" });
   } catch {
-    res.status(404).json({ fail: "Fail" });
+    res.status(200).json({ fail: "Fail" });
   }
 });
 
@@ -137,7 +137,7 @@ const listUserFollowing = asyncHandler(async (req, res, next) => {
       .select("_id username fullname avatar description");
     res.status(200).json({ result });
   } catch {
-    res.status(404).json({ fail: "Fail" });
+    res.status(200).json({ fail: "Fail" });
   }
 });
 const listUserFollowers = asyncHandler(async (req, res, next) => {
@@ -155,7 +155,7 @@ const listUserFollowers = asyncHandler(async (req, res, next) => {
       .select("_id username fullname avatar description");
     res.status(200).json({ result });
   } catch {
-    res.status(404).json({ fail: "Fail" });
+    res.status(200).json({ fail: "Fail" });
   }
 });
 
@@ -164,7 +164,7 @@ const getAllUsers = asyncHandler(async (req, res, next) => {
     const users = await Users.find({ role: "user" }).lean();
     res.status(200).json({ ...statusResponse(200, "OK", "Successfully"), users });
   } catch {
-    res.status(404).json({ ...statusResponse(500, "Fail", "Couldn't get list accounts user") });
+    res.status(200).json({ ...statusResponse(500, "Fail", "Couldn't get list accounts user") });
   }
 });
 const getAllAdmins = asyncHandler(async (req, res, next) => {
@@ -172,18 +172,18 @@ const getAllAdmins = asyncHandler(async (req, res, next) => {
     const users = await Users.find({ role: "admin" }).lean();
     res.status(200).json({ ...statusResponse(200, "OK", "Successfully"), users });
   } catch {
-    res.status(404).json({ ...statusResponse(500, "Fail", "Couldn't get list accounts admin") });
+    res.status(200).json({ ...statusResponse(500, "Fail", "Couldn't get list accounts admin") });
   }
 });
-const outstandingMembers = asyncHandler(async (req, res, next) => {
-  const Blog = await User.find().populate("user_id",);
-  res.json(Blog);
-  // try {
+// const outstandingMembers = asyncHandler(async (req, res, next) => {
+//   const Blog = await User.find().populate("user_id",);
+//   res.json(Blog);
+//   // try {
 
-  // } catch {
-  //   res.status(404).json({ ...statusResponse(500, "Fail", "Couldn't get list accounts") });
-  // }
-});
+//   // } catch {
+//   //   res.status(404).json({ ...statusResponse(500, "Fail", "Couldn't get list accounts") });
+//   // }
+// });
 module.exports = {
   getProfile,
   updateProfile,
@@ -194,5 +194,5 @@ module.exports = {
   listUserFollowers,
   getAllUsers,
   getAllAdmins,
-  outstandingMembers,
+  // outstandingMembers,
 };

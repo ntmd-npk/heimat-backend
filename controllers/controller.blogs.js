@@ -54,7 +54,7 @@ const getBlogsByCategory = asyncHandler(async (req, res, next) => {
     ]).exec();
     res.status(200).json({ result });
   } catch {
-    res.status(500).json({ result: "Fail" });
+    res.status(200).json({ result: "Fail" });
   }
 });
 
@@ -108,7 +108,7 @@ const getAllBlogs = asyncHandler(async (req, res, next) => {
     ]).exec();
     res.json({ result });
   } catch {
-    res.status(500).json({ result: "Fail" });
+    res.status(200).json({ result: "Fail" });
   }
 });
 
@@ -163,7 +163,7 @@ const getBlog = asyncHandler(async (req, res, next) => {
       },
     ]).exec();
     if (result[0].status == "block") {
-      res.status(404).json({
+      res.status(200).json({
         ...statusResponse(
           404,
           "Fail",
@@ -231,7 +231,7 @@ const postBlog = asyncHandler(async function (req, res, next) {
     const result = await blog.save();
     res.status(200).json({ ...statusResponse(200, "OK", "Successed"), result: { ...result._doc } });
   } catch {
-    res.status(500).json({ ...statusResponse(500, "Fail", "Cant save your blogs") });
+    res.status(200).json({ ...statusResponse(500, "Fail", "Cant save your blogs") });
   }
 });
 
@@ -245,7 +245,7 @@ const deleteBlog = asyncHandler(async (req, res, next) => {
     });
     res.status(200).json(statusResponse(200, "OK", "Successed"));
   } catch {
-    res.status(500).json(statusResponse(200, "Fail", "You can't delete this blog"));
+    res.status(200).json(statusResponse(500, "Fail", "You can't delete this blog"));
   }
 });
 const putBlog = asyncHandler(async (req, res, next) => {
@@ -306,7 +306,7 @@ const putBlog = asyncHandler(async (req, res, next) => {
       );
     res.status(200).json({ ...statusResponse(200, "OK", "Successed") });
   } catch {
-    res.status(500).json({ ...statusResponse(500, "Fail", "Errored") });
+    res.status(200).json({ ...statusResponse(500, "Fail", "Errored") });
   }
 });
 
@@ -356,7 +356,7 @@ const getAllPostOfAllUsers = asyncHandler(async (req, res, next) => {
     ]).exec();
     res.json({ result });
   } catch {
-    res.status(500).json({ ...statusResponse(500, "Fail", "Couldn't get blogs of all users") });
+    res.status(200).json({ ...statusResponse(500, "Fail", "Couldn't get blogs of all users") });
   }
 });
 const upvoteBlog = asyncHandler(async (req, res, next) => {
@@ -369,7 +369,7 @@ const upvoteBlog = asyncHandler(async (req, res, next) => {
     );
     res.status(200).json({ ...statusResponse(200, "OK", "Successfully") });
   } catch {
-    res.status(500).json({ ...statusResponse(500, "Fail", "Couldn't upvote blog") });
+    res.status(200).json({ ...statusResponse(500, "Fail", "Couldn't upvote blog") });
   }
 });
 const downvoteBlog = asyncHandler(async (req, res, next) => {
@@ -382,7 +382,7 @@ const downvoteBlog = asyncHandler(async (req, res, next) => {
     );
     res.status(200).json({ ...statusResponse(200, "OK", "Successfully") });
   } catch {
-    res.status(500).json({ ...statusResponse(500, "Fail", "Couldn't downvote blog") });
+    res.status(200).json({ ...statusResponse(500, "Fail", "Couldn't downvote blog") });
   }
 });
 
