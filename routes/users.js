@@ -9,7 +9,7 @@ const {
   listUserFollowers,
   getAllUsers,
   getAllAdmins,
-  outstandingMembers,
+  // outstandingMembers,
 } = require("../controllers/controller.users.js");
 const { verifyToken, isAdmin } = require("../middlewares/auth");
 const router = express.Router();
@@ -34,6 +34,6 @@ router.post("/list-followings", verifyToken, listUserFollowing);
 router.post("/list-followers", verifyToken, listUserFollowers);
 router.get("/all-admins", verifyToken, isAdmin, getAllAdmins);
 router.get("/all-users", verifyToken, isAdmin, getAllUsers);
-router.get("/outstanding", outstandingMembers);
+// router.get("/outstanding", outstandingMembers);
 
 module.exports = router;

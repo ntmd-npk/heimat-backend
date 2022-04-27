@@ -68,10 +68,14 @@ const verifyRegister = asyncHandler(async function (req, res, next) {
     const { email, code } = req.body;
     const result = await handleAccount.findOne({ email, code }).lean();
     if (result) {
-      const { username, password, email, fullname, created_date } = result;
+      const { username, password, email, fullname, created_date, typeAccount } = result;
       req.body.password = password;
-      const account = new Users({ username, password, email, fullname, created_date });
-      await account.save();
+      if (typeAccount == "register") {
+        const account = new Users({ username, password, email, fullname, created_date });
+        await account.save();
+      } else if (typeAccount == "forgot") {
+        Users.findOneAndUpdate({ email }, { password });
+      }
       await handleAccount.findOneAndRemove({ email });
       next();
     } else {
@@ -88,10 +92,20 @@ const verifyRegister = asyncHandler(async function (req, res, next) {
 
 const forgotPassword = asyncHandler(async function (req, res, next) {
   try {
-    const { email } = req.body;
-    const result = await Users.findOne({ email }).lean();
+    const { email, password } = req.body;
+    const temp = await handleAccount.findOne({ email }).lean();
+    if (temp) {
+      res.status(200).json({
+        ...statusResponse(
+          500,
+          "Fail",
+          "We sent the code to your email earlier. Please check your mail for verification!!!"
+        ),
+      });
+    }
+    const result = Users.findOne({ email }).lean();
     if (result) {
-      const { username, password, email, fullname, created_date } = result;
+      const { username, email, fullname, created_date } = result;
       verifyEmail(email)
         .then(async (result) => {
           if (result.status) {
@@ -101,19 +115,22 @@ const forgotPassword = asyncHandler(async function (req, res, next) {
               password,
               created_date,
               email,
-              typeAccount: "register",
+              typeAccount: "forgot",
               code: result.code,
             });
             await temp.save();
           }
           deleteAccount(email);
           return res.status(200).json({
-            ...statusResponse(200, "OK", "Please check your mail for verification"),
+            ...statusResponse(
+              200,
+              "OK",
+              "The code sent is valid for about 5 minutes. Please check your mail for verification, This code have"
+            ),
           });
         })
-        .catch((err) => {
-          console.log(err);
-          res.status(500).json({
+        .catch(() => {
+          res.status(200).json({
             ...statusResponse(
               500,
               "Fail",
@@ -163,7 +180,7 @@ const login = asyncHandler(async function (req, res, next) {
         return res.status(200).json({
           ...statusResponse(200, "OK", "Login successed!!!"),
           ...{
-            data: { _id, username, email, fullname, role, cover, description, avatar },
+            data: { ...account },
             accessToken,
             refreshToken,
           },
@@ -172,7 +189,7 @@ const login = asyncHandler(async function (req, res, next) {
         return res.status(200).json({
           ...statusResponse(200, "OK", "Login successed!!!"),
           ...{
-            data: { _id, username, email, fullname, cover, description, avatar },
+            data: { ...account },
             accessToken,
             refreshToken,
           },
