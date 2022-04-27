@@ -85,31 +85,32 @@ const deleteProfile = asyncHandler(async (req, res, next) => {
 const followers = asyncHandler(async (req, res, next) => {
   const user = req._id;
   const { user_id } = req.body;
-  try {
-    let USERID = await Users.findById(mongoose.Types.ObjectId(user)).lean();
-    if (USERID.following.includes(mongoose.Types.ObjectId(user_id))) {
-      res.json({ result: "existed" });
-    } else {
-      USERID.following.push(mongoose.Types.ObjectId(user_id));
-      let userFollowed = await Users.findById(mongoose.Types.ObjectId(user_id)).lean();
-      userFollowed.followers.push(mongoose.Types.ObjectId(user));
-      await USERID.save();
-      await userFollowed.save();
-    }
-    res.status(200).json({ result: "OK" });
-  } catch {
-    res.status(200).json({ fail: "Fail" });
+  let USERID = await Users.findById(mongoose.Types.ObjectId(user));
+  if (USERID.following.includes(mongoose.Types.ObjectId(user_id))) {
+    res.json({ result: "existed" });
+  } else {
+    USERID.following.push(mongoose.Types.ObjectId(user_id));
+    let userFollowed = await Users.findById(mongoose.Types.ObjectId(user_id));
+    userFollowed.followers.push(mongoose.Types.ObjectId(user));
+    await USERID.save();
+    await userFollowed.save();
   }
+  res.status(200).json({ result: "OK" });
+  // try {
+
+  // } catch {
+  //   res.status(200).json({ fail: "Fail" });
+  // }
 });
 
 const unfollowers = asyncHandler(async (req, res, next) => {
   const user = req._id;
   const { user_id } = req.body;
   try {
-    let USERID = await Users.findById(mongoose.Types.ObjectId(user)).lean();
+    let USERID = await Users.findById(mongoose.Types.ObjectId(user));
     if (USERID.following.includes(mongoose.Types.ObjectId(user_id))) {
       USERID.following.pull(mongoose.Types.ObjectId(user_id));
-      let userFollowed = await Users.findById(mongoose.Types.ObjectId(user_id)).lean();
+      let userFollowed = await Users.findById(mongoose.Types.ObjectId(user_id));
       userFollowed.followers.pull(mongoose.Types.ObjectId(user));
       await USERID.save();
       await userFollowed.save();
