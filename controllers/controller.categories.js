@@ -9,7 +9,7 @@ const getCategories = asyncHandler(async (req, res, next) => {
     const result = await categories.find().lean();
     res.status(200).json({ categories: result });
   } catch {
-    res.status(500).json({ ...statusResponse(500, "Fail", "Couldn't get categories data") });
+    res.status(200).json({ ...statusResponse(500, "Fail", "Couldn't get categories data") });
   }
 });
 const addCategory = asyncHandler(async (req, res, next) => {
@@ -20,16 +20,16 @@ const addCategory = asyncHandler(async (req, res, next) => {
   if (file) {
     cover = process.env.URL_FILE + file.filename;
   } else {
-    res.status(500).json({ ...statusResponse(500, "Fail", "You didn't has field cover") });
+    res.status(200).json({ ...statusResponse(500, "Fail", "You didn't has field cover") });
   }
   if (!name) {
-    res.status(500).json({ ...statusResponse(500, "Fail", "You didn't has field name") });
+    res.status(200).json({ ...statusResponse(500, "Fail", "You didn't has field name") });
   }
   if (!description) {
-    res.status(500).json({ ...statusResponse(500, "Fail", "You didn't has field description") });
+    res.status(200).json({ ...statusResponse(500, "Fail", "You didn't has field description") });
   }
   if (!created_date) {
-    res.status(500).json({ ...statusResponse(500, "Fail", "You didn't has field created date") });
+    res.status(200).json({ ...statusResponse(500, "Fail", "You didn't has field created date") });
   }
   try {
     const result = await categories.findOne({ name }).lean();
@@ -41,7 +41,7 @@ const addCategory = asyncHandler(async (req, res, next) => {
       res.status(200).json({ ...statusResponse(200, "OK", "This category created") });
     }
   } catch {
-    res.status(500).json({ ...statusResponse(500, "Fail", "Couldn't add this category") });
+    res.status(200).json({ ...statusResponse(500, "Fail", "Couldn't add this category") });
   }
 });
 const updateCategroy = asyncHandler(async (req, res, next) => {
@@ -66,7 +66,7 @@ const updateCategroy = asyncHandler(async (req, res, next) => {
     }
     res.status(200).json({ ...statusResponse(200, "OK", "This category updated"), ...result });
   } catch {
-    res.status(500).json({ ...statusResponse(500, "Fail", "Couldn't update this category") });
+    res.status(200).json({ ...statusResponse(500, "Fail", "Couldn't update this category") });
   }
 });
 const deleteCategory = asyncHandler(async (req, res, next) => {
@@ -79,7 +79,7 @@ const deleteCategory = asyncHandler(async (req, res, next) => {
     );
     res.status(200).json({ ...statusResponse(200, "OK", "This category deleted") });
   } catch {
-    res.status(500).json({ ...statusResponse(500, "Fail", "Couldn't delete this category") });
+    res.status(200).json({ ...statusResponse(500, "Fail", "Couldn't delete this category") });
   }
 });
 

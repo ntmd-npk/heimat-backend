@@ -13,7 +13,7 @@ const reportUser = asyncHandler(async (req, res, next) => {
     object_id = mongoose.Types.ObjectId(object_id);
     const temp = await Users.findById(object_id).lean();
     if (!temp) {
-      res.status(500).json({ result: "fail" });
+      res.status(200).json({ result: "fail" });
     }
     const report = new Reports({
       user_id,
@@ -27,7 +27,7 @@ const reportUser = asyncHandler(async (req, res, next) => {
     await report.save();
     res.status(200).json({ result: "OK" });
   } catch (e) {
-    res.status(500).json({ result: "fail" });
+    res.status(200).json({ result: "fail" });
   }
 });
 const reportBlog = asyncHandler(async (req, res, next) => {
@@ -37,7 +37,7 @@ const reportBlog = asyncHandler(async (req, res, next) => {
     object_id = mongoose.Types.ObjectId(object_id);
     const temp = await Blogs.findById(object_id);
     if (!temp) {
-      res.status(500).json({ result: "fail nè" });
+      res.status(200).json({ result: "fail nè" });
     }
     const report = new Reports({
       user_id,
@@ -51,7 +51,7 @@ const reportBlog = asyncHandler(async (req, res, next) => {
     await report.save();
     res.status(200).json({ result: "OK" });
   } catch (e) {
-    res.status(500).json({ result: "fail" });
+    res.status(200).json({ result: "fail" });
   }
 });
 const reportComment = asyncHandler(async (req, res, next) => {
@@ -62,7 +62,7 @@ const reportComment = asyncHandler(async (req, res, next) => {
     const temp = await Comments.findById(object_id);
     if (!temp) {
       res.json(temp);
-      res.status(500).json({ result: "fail" });
+      res.status(200).json({ result: "fail" });
     }
     const report = new Reports({
       user_id,
@@ -76,7 +76,7 @@ const reportComment = asyncHandler(async (req, res, next) => {
     await report.save();
     res.status(200).json({ result: "OK" });
   } catch (e) {
-    res.status(500).json({ result: "fail" });
+    res.status(200).json({ result: "fail" });
   }
 });
 

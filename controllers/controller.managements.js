@@ -28,7 +28,7 @@ const lockUser = asyncHandler(async (req, res, next) => {
   const role = req.role;
   const { user_id } = req.body;
   if (user_id == req._id && req.username == "duyen") {
-    res.status(500).json({ ...statusResponse(500, "Fail", "Couldn't lock this account") });
+    res.status(200).json({ ...statusResponse(500, "Fail", "Couldn't lock this account") });
   }
   try {
     if (role == "admin") {
@@ -38,10 +38,10 @@ const lockUser = asyncHandler(async (req, res, next) => {
       ).lean();
       res.status(200).json({ ...statusResponse(200, "OK", "Successfully") });
     } else {
-      res.status(500).json({ ...statusResponse(500, "Fail", "Couldn't lock this account") });
+      res.status(200).json({ ...statusResponse(500, "Fail", "Couldn't lock this account") });
     }
   } catch (e) {
-    res.status(400).json({ ...statusResponse(400, "Fail", "Couldn't lock this account") });
+    res.status(200).json({ ...statusResponse(400, "Fail", "Couldn't lock this account") });
   }
 });
 
@@ -53,10 +53,10 @@ const listLockedUsers = asyncHandler(async (req, res, next) => {
       const result = await Users.find({ status: "block" }).lean();
       res.status(200).json({ ...statusResponse(200, "OK", "Successfully"), result });
     } else {
-      res.status(500).json({ ...statusResponse(500, "Fail", "Couldn't delete this account") });
+      res.status(200).json({ ...statusResponse(500, "Fail", "Couldn't delete this account") });
     }
   } catch (e) {
-    res.status(400).json({ ...statusResponse(400, "Fail", "Couldn't delete this account") });
+    res.status(200).json({ ...statusResponse(400, "Fail", "Couldn't delete this account") });
   }
 });
 
@@ -64,7 +64,7 @@ const unlockUser = asyncHandler(async (req, res, next) => {
   const role = req.role;
   const { user_id } = req.body;
   if (user_id == req._id && req.username == "duyen") {
-    res.status(500).json({ ...statusResponse(500, "Fail", "Couldn't lock this account") });
+    res.status(200).json({ ...statusResponse(500, "Fail", "Couldn't lock this account") });
   }
   try {
     if (role == "admin") {
@@ -74,10 +74,10 @@ const unlockUser = asyncHandler(async (req, res, next) => {
       ).lean();
       res.status(200).json({ ...statusResponse(200, "OK", "Successfully") });
     } else {
-      res.status(500).json({ ...statusResponse(500, "Fail", "Couldn't lock this account") });
+      res.status(200).json({ ...statusResponse(500, "Fail", "Couldn't lock this account") });
     }
   } catch (e) {
-    res.status(400).json({ ...statusResponse(400, "Fail", "Couldn't lock this account") });
+    res.status(200).json({ ...statusResponse(400, "Fail", "Couldn't lock this account") });
   }
 });
 

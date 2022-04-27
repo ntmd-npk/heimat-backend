@@ -18,7 +18,7 @@ const postComment = asyncHandler(async (req, res, next) => {
     res.status(200).json({ ...statusResponse("200", "OK", "Successfully"), result });
   } catch {
     res
-      .status(500)
+      .status(200)
       .json({ ...statusResponse("500", "Fail", "Couldn't get list comments for this blog") });
   }
 });
@@ -34,7 +34,7 @@ const updateComment = asyncHandler(async (req, res, next) => {
     res.status(200).json({ ...statusResponse("200", "OK", "Successfully"), result });
   } catch (e) {
     res
-      .status(500)
+      .status(200)
       .json({ ...statusResponse("500", "Fail", "Couldn't update comment for this blog") });
   }
 });
@@ -49,7 +49,7 @@ const deleteComment = asyncHandler(async (req, res, next) => {
     res.status(200).json({ ...statusResponse(200, "OK", "Successfully") });
   } catch {
     res
-      .status(500)
+      .status(200)
       .json({ ...statusResponse(200, "Fail", "Couldn't delete comment for this blog") });
   }
 });
@@ -60,7 +60,7 @@ const getComment = asyncHandler(async (req, res, next) => {
     res.status(200).json({ ...statusResponse("200", "OK", "Successfully"), result });
   } catch (e) {
     res
-      .status(500)
+      .status(200)
       .json({ ...statusResponse("500", "Fail", "Couldn't get comment for this blog") });
   }
 });

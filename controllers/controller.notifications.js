@@ -13,7 +13,7 @@ const getNotification = asyncHandler(async (req, res, next) => {
   } catch {
    
     res
-      .status(500)
+      .status(200)
       .json({ ...statusResponse("500", "Fail", "Couldn't get your list notifications") });
   }
 });
@@ -31,7 +31,7 @@ const readNotification = asyncHandler(async (req, res, next) => {
   } catch  {
    
     res
-      .status(500)
+      .status(200)
       .json({ ...statusResponse("500", "Fail", "Couldn't handle to read notifications") });
   }
 });
@@ -46,7 +46,7 @@ const getAllNotification = asyncHandler(async (req, res, next) => {
   } catch  {
    
     res
-      .status(500)
+      .status(200)
       .json({ ...statusResponse("500", "Fail", "Couldn't handle to read notifications") });
   }
 });
@@ -69,7 +69,7 @@ const deleteNotification = asyncHandler(async (req, res, next) => {
   } catch  {
 
     res
-      .status(500)
+      .status(200)
       .json({ ...statusResponse("500", "Fail", "Couldn't handle to delete notifications") });
   }
 });
