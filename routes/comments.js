@@ -8,10 +8,11 @@ const {
   downvoteComment,
   getUserDownvote,
   getUserUpvote,
+  getAllComment,
 } = require("../controllers/controller.comments");
 const express = require("express");
 const router = express.Router();
-const { verifyToken } = require("../middlewares/auth");
+const { verifyToken, isAdmin } = require("../middlewares/auth");
 
 router
   .route("/")
@@ -23,5 +24,6 @@ router.post("/upvote", verifyToken, checkUpvote, upvoteComment);
 router.post("/downvote", verifyToken, checkDownvote, downvoteComment);
 router.post("/upvote/users", getUserUpvote);
 router.post("/downvote/users", getUserDownvote);
+router.get("/all", verifyToken, isAdmin, getAllComment);
 
 module.exports = router;

@@ -159,6 +159,31 @@ const listUserFollowers = asyncHandler(async (req, res, next) => {
   }
 });
 
+const getAllUsers = asyncHandler(async (req, res, next) => {
+  try {
+    const users = await Users.find({ role: "user" }).lean();
+    res.status(200).json({ ...statusResponse(200, "OK", "Successfully"), users });
+  } catch {
+    res.status(404).json({ ...statusResponse(500, "Fail", "Couldn't get list accounts user") });
+  }
+});
+const getAllAdmins = asyncHandler(async (req, res, next) => {
+  try {
+    const users = await Users.find({ role: "admin" }).lean();
+    res.status(200).json({ ...statusResponse(200, "OK", "Successfully"), users });
+  } catch {
+    res.status(404).json({ ...statusResponse(500, "Fail", "Couldn't get list accounts admin") });
+  }
+});
+const outstandingMembers = asyncHandler(async (req, res, next) => {
+  const Blog = await User.find().populate("user_id",);
+  res.json(Blog);
+  // try {
+
+  // } catch {
+  //   res.status(404).json({ ...statusResponse(500, "Fail", "Couldn't get list accounts") });
+  // }
+});
 module.exports = {
   getProfile,
   updateProfile,
@@ -167,4 +192,7 @@ module.exports = {
   unfollowers,
   listUserFollowing,
   listUserFollowers,
+  getAllUsers,
+  getAllAdmins,
+  outstandingMembers,
 };

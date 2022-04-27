@@ -10,9 +10,9 @@ const {
 } = require("../controllers/controller.auth");
 
 router.post("/register", register);
-router.post("/verification", verifyRegister);
+router.post("/verification", verifyRegister, login);
 router.post("/login", login);
 router.post("/logout", verifyToken, logout);
-router.post("/refesh", refeshToken);
+router.post("/refresh", refeshToken);
 
 module.exports = router;
