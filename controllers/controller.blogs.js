@@ -243,6 +243,9 @@ const deleteBlog = asyncHandler(async (req, res, next) => {
       user_id: mongoose.Types.ObjectId(user_id),
       _id: mongoose.Types.ObjectId(id),
     });
+    await Comments.deleteMany({
+      from_blog_id: mongoose.Types.ObjectId(id),
+    });
     res.status(200).json(statusResponse(200, "OK", "Successed"));
   } catch {
     res.status(200).json(statusResponse(500, "Fail", "You can't delete this blog"));
