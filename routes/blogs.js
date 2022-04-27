@@ -28,8 +28,8 @@ var upload = multer({ storage: storage });
 router.get("/by-category", getBlogsByCategory);
 router.get("/all", getAllPostOfAllUsers);
 router.get("/:id", getBlog);
-router.post("/upvote/:id", verifyToken, upvoteBlog);
-router.post("/downvote/:id", verifyToken, downvoteBlog);
+router.post("/upvote/:idBlog", verifyToken, upvoteBlog);
+router.post("/downvote/:idBlog", verifyToken, downvoteBlog);
 router.get("/", getAllBlogs);
 router.post("/", verifyToken, upload.single("cover"), postBlog);
 router
