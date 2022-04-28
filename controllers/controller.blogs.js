@@ -362,31 +362,55 @@ const getAllPostOfAllUsers = asyncHandler(async (req, res, next) => {
     res.status(200).json({ ...statusResponse(500, "Fail", "Couldn't get blogs of all users") });
   }
 });
-const upvoteBlog = asyncHandler(async (req, res, next) => {
-  try {
-    const user_id = req._id;
-    const { idBlog } = req.params;
-    const result = await Blogs.updateOne(
-      { _id: mongoose.Types.ObjectId(idBlog) },
-      { $pull: { downvote: user_id }, $push: { upvote: user_id } }
-    );
-    res.status(200).json({ ...statusResponse(200, "OK", "Successfully"), result });
-  } catch {
-    res.status(200).json({ ...statusResponse(500, "Fail", "Couldn't upvote blog") });
+
+const checkUpvote = asyncHandler(async (req, res, next) => {
+  const user_id = req._id;
+  const { idBlog } = req.params;
+  const Blog = await Blogs.findOne({ _id: mongoose.Types.ObjectId(idBlog) });
+  await Blog.downvote.pull(mongoose.Types.ObjectId(user_id));
+  const result = await Blog.upvote.includes(mongoose.Types.ObjectId(user_id));
+  if (result) {
+    await Blog.upvote.pull(mongoose.Types.ObjectId(user_id));
+    await Blog.save();
+    res
+      .status(200)
+      .json({ ...statusResponse("200", "OK", "You disupvoted this comment"), result: Blog });
+  } else {
+    req.Blog = Blog;
+    next();
   }
 });
-const downvoteBlog = asyncHandler(async (req, res, next) => {
-  try {
-    const user_id = req._id;
-    const { idBlog } = req.body;
-    await Blogs.updateOne(
-      { _id: mongoose.Types.ObjectId(idBlog) },
-      { $push: { downvote: user_id }, $pull: { upvote: user_id } }
-    );
-    res.status(200).json({ ...statusResponse(200, "OK", "Successfully"), result });
-  } catch {
-    res.status(200).json({ ...statusResponse(500, "Fail", "Couldn't downvote blog") });
+const checkDownvote = asyncHandler(async (req, res, next) => {
+  const user_id = req._id;
+  const { idBlog } = req.params;
+  const Blog = await Blogs.findOne({ _id: mongoose.Types.ObjectId(idBlog) });
+  await Blog.upvote.pull(mongoose.Types.ObjectId(user_id));
+  const result = await Blog.downvote.includes(mongoose.Types.ObjectId(user_id));
+  if (result) {
+    await Blog.downvote.pull(mongoose.Types.ObjectId(user_id));
+    await Blog.save();
+    res
+      .status(200)
+      .json({ ...statusResponse("200", "OK", "You disdownvoted this comment"), result: Blog });
+  } else {
+    req.Blog = Blog;
+    next();
   }
+});
+
+const upvoteBlog = asyncHandler(async (req, res, next) => {
+  const user_id = req._id;
+  const Blog = req.Blog;
+  await Blog.upvote.push(mongoose.Types.ObjectId(user_id));
+  await Blog.save();
+  res.status(200).json({ ...statusResponse("200", "OK", "Successfully"), result: Blog });
+});
+const downvoteBlog = asyncHandler(async (req, res, next) => {
+  const user_id = req._id;
+  const Blog = req.Blog;
+  await Blog.downvote.push(mongoose.Types.ObjectId(user_id));
+  await Blog.save();
+  res.status(200).json({ ...statusResponse("200", "OK", "Successfully"), result: Blog });
 });
 
 const blogForRecommend = asyncHandler(async (req, res, next) => {
@@ -510,6 +534,8 @@ module.exports = {
   getAllBlogs,
   getBlogsByCategory,
   getAllPostOfAllUsers,
+  checkUpvote,
+  checkDownvote,
   upvoteBlog,
   downvoteBlog,
   blogForRecommend,

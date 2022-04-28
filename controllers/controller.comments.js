@@ -102,7 +102,6 @@ const checkDownvote = asyncHandler(async (req, res, next) => {
 
 const upvoteComment = asyncHandler(async (req, res, next) => {
   const user_id = req._id;
-
   const comment = req.comment;
   await comment.upvote.push(mongoose.Types.ObjectId(user_id));
   await comment.save();

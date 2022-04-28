@@ -86,7 +86,6 @@ const getAllAdmins = asyncHandler(async (req, res, next) => {
   }
 });
 
-
 const getOtherUser = asyncHandler(async (req, res, next) => {
   const { user_id } = req.body;
   try {
@@ -97,7 +96,29 @@ const getOtherUser = asyncHandler(async (req, res, next) => {
   }
 });
 
-
-
-
-
+const upvoteBlog = asyncHandler(async (req, res, next) => {
+  try {
+    const user_id = req._id;
+    const { idBlog } = req.params;
+    const result = await Blogs.updateOne(
+      { _id: mongoose.Types.ObjectId(idBlog) },
+      { $pull: { downvote: user_id }, $push: { upvote: user_id } }
+    );
+    res.status(200).json({ ...statusResponse(200, "OK", "Successfully"), result });
+  } catch {
+    res.status(200).json({ ...statusResponse(500, "Fail", "Couldn't upvote blog") });
+  }
+});
+const downvoteBlog = asyncHandler(async (req, res, next) => {
+  try {
+    const user_id = req._id;
+    const { idBlog } = req.params;
+    await Blogs.updateOne(
+      { _id: mongoose.Types.ObjectId(idBlog) },
+      { $push: { downvote: user_id }, $pull: { upvote: user_id } }
+    );
+    res.status(200).json({ ...statusResponse(200, "OK", "Successfully"), result });
+  } catch {
+    res.status(200).json({ ...statusResponse(500, "Fail", "Couldn't downvote blog") });
+  }
+});

@@ -6,13 +6,15 @@ const {
   logout,
   login,
   verifyRegister,
-  refeshToken,
+  refreshToken,
+  changePassword,
 } = require("../controllers/controller.auth");
 
 router.post("/register", register);
 router.post("/verification", verifyRegister, login);
 router.post("/login", login);
 router.post("/logout", verifyToken, logout);
-router.post("/refresh", refeshToken);
+router.post("/refresh", refreshToken);
+router.post("/change-password", verifyToken, changePassword);
 
 module.exports = router;

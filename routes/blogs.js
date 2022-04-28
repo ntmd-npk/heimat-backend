@@ -10,6 +10,8 @@ const {
   putBlog,
   getAllPostOfAllUsers,
   getBlogsByCategory,
+  checkUpvote,
+  checkDownvote,
   upvoteBlog,
   downvoteBlog,
   blogForRecommend,
@@ -28,8 +30,8 @@ var upload = multer({ storage: storage });
 router.get("/by-category", getBlogsByCategory);
 router.get("/all", getAllPostOfAllUsers);
 router.get("/:id", getBlog);
-router.post("/upvote/:idBlog", verifyToken, upvoteBlog);
-router.post("/downvote/:idBlog", verifyToken, downvoteBlog);
+router.post("/upvote/:idBlog", verifyToken, checkUpvote, upvoteBlog);
+router.post("/downvote/:idBlog", verifyToken, checkDownvote, downvoteBlog);
 router.get("/", getAllBlogs);
 router.post("/", verifyToken, upload.single("cover"), postBlog);
 router

@@ -222,7 +222,7 @@ function logout(req, res) {
   });
 }
 
-const refeshToken = asyncHandler(async (req, res, next) => {
+const refreshToken = asyncHandler(async (req, res, next) => {
   const { refreshToken } = req.body;
   const decoded = jwt.verify(refreshToken, process.env.REFESH_TOKEN_SECRET);
   if (!decoded) {
@@ -244,11 +244,30 @@ const refeshToken = asyncHandler(async (req, res, next) => {
     res.status(200).json({ ...statusResponse(200, "OK", "Successfully"), accessToken });
   }
 });
+
+const changePassword = asyncHandler(async (req, res, next) => {
+  const _id = req._id;
+  const { oldPassword, newPassword } = req.body;
+  const user = Users.findOne({
+    _id: mongoose.Types.ObjectId(_id),
+    password: oldPassword,
+  });
+  if (user) {
+    await Users.findOneAndUpdate({
+      _id: mongoose.Types.ObjectId(_id),
+      password: newPassword,
+    });
+    res.status(200).json({ ...statusResponse(200, "OK", "Successfully") });
+  } else {
+    res.status(200).json({ ...statusResponse(400, "Error", "Fail") });
+  }
+});
 module.exports = {
   register,
   logout,
   login,
   verifyRegister,
-  refeshToken,
+  refreshToken,
   forgotPassword,
+  changePassword,
 };
