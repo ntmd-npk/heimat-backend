@@ -166,6 +166,7 @@ const getAllComment = asyncHandler(async (req, res, next) => {
         title: 1,
         content: 1,
         created_date: 1,
+        status: 1,
       },
     },
   ]);

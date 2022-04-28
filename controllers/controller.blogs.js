@@ -6,13 +6,18 @@ const Comments = require("../models/comments");
 
 const getBlogsByCategory = asyncHandler(async (req, res, next) => {
   const { category_id } = req.query;
+  let temp;
+  if (req?.role == "admin" || req._id) {
+    temp = {
+      category_id: mongoose.Types.ObjectId(category_id),
+    };
+  } else {
+    temp = { category_id: mongoose.Types.ObjectId(category_id), status: "public" };
+  }
   try {
     const result = await Blogs.aggregate([
       {
-        $match: {
-          category_id: mongoose.Types.ObjectId(category_id),
-          status: "public",
-        },
+        $match: { ...temp },
       },
       {
         $lookup: {
@@ -61,11 +66,18 @@ const getBlogsByCategory = asyncHandler(async (req, res, next) => {
 const getAllBlogs = asyncHandler(async (req, res, next) => {
   try {
     const { user_id } = req.query;
+    let temp;
+    if (req?.role == "admin" || req._id) {
+      temp = {
+        user_id: mongoose.Types.ObjectId(user_id),
+      };
+    } else {
+      temp = { user_id: mongoose.Types.ObjectId(user_id), status: "public" };
+    }
     const result = await Blogs.aggregate([
       {
         $match: {
-          user_id: mongoose.Types.ObjectId(user_id),
-          status: "public",
+          ...temp,
         },
       },
       {
@@ -115,10 +127,18 @@ const getAllBlogs = asyncHandler(async (req, res, next) => {
 const getBlog = asyncHandler(async (req, res, next) => {
   try {
     const { id } = req.params;
+    let temp;
+    if (req?.role == "admin" || req._id) {
+      temp = {
+        _id: mongoose.Types.ObjectId(id),
+      };
+    } else {
+      temp = { _id: mongoose.Types.ObjectId(id), status: "public" };
+    }
     const result = await Blogs.aggregate([
       {
         $match: {
-          _id: mongoose.Types.ObjectId(id),
+          ...temp,
         },
       },
       {
@@ -162,12 +182,12 @@ const getBlog = asyncHandler(async (req, res, next) => {
         },
       },
     ]).exec();
-    if (result[0].status == "block") {
+    if (result.length == 0) {
       res.status(200).json({
         ...statusResponse(
           404,
           "Fail",
-          "This blog has been locked due to a violation of Heimat's policy and terms and usage."
+          "This blog has been locked due to a violation of Heimat's policy and terms and usage or didn't exist."
         ),
       });
     }
@@ -314,8 +334,19 @@ const putBlog = asyncHandler(async (req, res, next) => {
 });
 
 const getAllPostOfAllUsers = asyncHandler(async (req, res, next) => {
+  let temp;
+  if (req?.role == "admin" || req._id) {
+    temp = {};
+  } else {
+    temp = {
+      $match: {
+        status: "public",
+      },
+    };
+  }
   try {
     const result = await Blogs.aggregate([
+      temp,
       {
         $lookup: {
           from: "users",
@@ -349,6 +380,7 @@ const getAllPostOfAllUsers = asyncHandler(async (req, res, next) => {
           upvote: 1,
           downvote: 1,
           cover: 1,
+          status: 1,
         },
       },
       {
@@ -415,10 +447,15 @@ const downvoteBlog = asyncHandler(async (req, res, next) => {
 
 const blogForRecommend = asyncHandler(async (req, res, next) => {
   const { pagination } = req.body;
-  const result = await Blogs.countDocuments();
+  const result = await Blogs.countDocuments({ status: "public" });
   const LIMIT = 3;
   let blogs = {};
   blogs = await Blogs.aggregate([
+    {
+      $match: {
+        status: "public",
+      },
+    },
     {
       $skip: pagination * LIMIT - LIMIT,
     },
@@ -481,6 +518,7 @@ const blogsByMonth = asyncHandler(async (req, res, next) => {
           $gte: new Date(start),
           $lt: new Date(end),
         },
+        status: "public",
       },
     },
     {

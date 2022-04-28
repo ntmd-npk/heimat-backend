@@ -131,7 +131,33 @@ const unlockComment = asyncHandler(async (req, res, next) => {
 
 const searchBlogsAndUsers = asyncHandler(async (req, res, next) => {
   const { keyword } = req.body;
-  const users = await Users.find({ fullname: { $regex: keyword, $options: "i" } }).lean();
+  const users = await Users.aggregate([
+    {
+      $match: {
+        fullname: { $regex: keyword, $options: "i" },
+      },
+    },
+    {
+      $lookup: {
+        from: "blogs",
+        localField: "_id",
+        foreignField: "user_id",
+        as: "blogs",
+      },
+    },
+    {
+      $project: {
+        avatar: 1,
+        username: 1,
+        fullname: 1,
+        followers: 1,
+        following: 1,
+        description: 1,
+        _id: 1,
+        countBlog: "$blogs._id",
+      },
+    },
+  ]);
   const blogs = await Blogs.aggregate([
     {
       $match: {

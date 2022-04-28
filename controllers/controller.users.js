@@ -176,15 +176,32 @@ const getAllAdmins = asyncHandler(async (req, res, next) => {
     res.status(200).json({ ...statusResponse(500, "Fail", "Couldn't get list accounts admin") });
   }
 });
-// const outstandingMembers = asyncHandler(async (req, res, next) => {
-//   const Blog = await User.find().populate("user_id",);
-//   res.json(Blog);
-//   // try {
-
-//   // } catch {
-//   //   res.status(404).json({ ...statusResponse(500, "Fail", "Couldn't get list accounts") });
-//   // }
-// });
+const outstandingMembers = asyncHandler(async (req, res, next) => {
+  const result = await Users.aggregate([
+    {
+      $lookup: {
+        from: "blogs",
+        localField: "_id",
+        foreignField: "user_id",
+        as: "blogs",
+      },
+    },
+    {
+      $project: {
+        avatar: 1,
+        username: 1,
+        fullname: 1,
+        followers: 1,
+        following: 1,
+        description: 1,
+        _id: 1,
+        countBlog: "$blogs._id",
+      },
+    },
+  ]);
+  // const Blog = await Blogs.find().populate("user_id");
+  res.json({ result });
+});
 module.exports = {
   getProfile,
   updateProfile,
@@ -195,5 +212,5 @@ module.exports = {
   listUserFollowers,
   getAllUsers,
   getAllAdmins,
-  // outstandingMembers,
+  outstandingMembers,
 };
