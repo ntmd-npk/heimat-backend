@@ -251,12 +251,14 @@ const changePassword = asyncHandler(async (req, res, next) => {
   const user = Users.findOne({
     _id: mongoose.Types.ObjectId(_id),
     password: oldPassword,
-  });
+  }).lean();
   if (user) {
-    await Users.findOneAndUpdate({
-      _id: mongoose.Types.ObjectId(_id),
-      password: newPassword,
-    });
+    await Users.findOneAndUpdate(
+      {
+        _id: mongoose.Types.ObjectId(_id),
+      },
+      { password: newPassword }
+    );
     res.status(200).json({ ...statusResponse(200, "OK", "Successfully") });
   } else {
     res.status(200).json({ ...statusResponse(400, "Error", "Fail") });
