@@ -50,6 +50,7 @@ const getBlogsByCategory = asyncHandler(async (req, res, next) => {
           },
           title: 1,
           content: 1,
+          description: 1,
           created_date: 1,
           upvote: 1,
           downvote: 1,
@@ -110,6 +111,7 @@ const getAllBlogs = asyncHandler(async (req, res, next) => {
             _id: 1,
           },
           title: 1,
+          description: 1,
           content: 1,
           created_date: 1,
           upvote: 1,
@@ -174,6 +176,7 @@ const getBlog = asyncHandler(async (req, res, next) => {
           },
           title: 1,
           content: 1,
+          description: 1,
           status: 1,
           created_date: 1,
           upvote: 1,
@@ -183,6 +186,7 @@ const getBlog = asyncHandler(async (req, res, next) => {
       },
     ]).exec();
     if (result.length == 0) {
+      console.log(result);
       res.status(200).json({
         ...statusResponse(
           404,
@@ -375,6 +379,7 @@ const getAllPostOfAllUsers = asyncHandler(async (req, res, next) => {
             _id: 1,
           },
           title: 1,
+          description: 1,
           content: 1,
           created_date: 1,
           upvote: 1,
@@ -488,6 +493,7 @@ const blogForRecommend = asyncHandler(async (req, res, next) => {
         },
         title: 1,
         content: 1,
+        description: 1,
         created_date: 1,
         upvote: 1,
         downvote: 1,
@@ -501,6 +507,7 @@ const blogForRecommend = asyncHandler(async (req, res, next) => {
     },
     { $limit: LIMIT },
   ]);
+  console.log(blogs);
   let temp = {
     totalPagination: Math.round(result / LIMIT),
     totalBlogs: result,
